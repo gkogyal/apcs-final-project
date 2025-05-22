@@ -13,7 +13,7 @@ void setup() {
   
   createStage(20);
   PVector start = playerStart();
-  Me = new Player(0,0,300,10);
+  Me = new Player(0,0,300);
   if(start!=null) Me.modLoc(start);
   Me.dir = new PVector(0,0);
 }
