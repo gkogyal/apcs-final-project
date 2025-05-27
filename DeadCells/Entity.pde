@@ -14,7 +14,3 @@ abstract class Entity {
   
   
 }
-
-/*
-TW horrible code
-*/
