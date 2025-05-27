@@ -1,9 +1,11 @@
-int ss = 25,h,w,ch,cw;
+int ss = 25,h,w;
 boolean[][] map;
 Player Me;
 PVector coord = new PVector(0,0);
-boolean manualSpaceType = true;
+boolean manualSpaceType = true; boolean editor;
 ArrayList<int[]> spaces = new ArrayList<int[]>();
+//Stage stage;
+boolean paused;
 
 void setup() {
   size(1600,1000);
@@ -13,7 +15,7 @@ void setup() {
   
   createStage(20);
   PVector start = playerStart();
-  Me = new Player(0,0,300,10);
+  Me = new Player(0,0,300);
   if(start!=null) Me.modLoc(start);
   Me.dir = new PVector(0,0);
 }
@@ -146,6 +148,10 @@ void keyPressed() {
   if(keyCode=='T') {
     manualSpaceType = !manualSpaceType;
   }
+  
+  if(keyCode=='E') {
+    editor = !editor;
+  }
 }
 
 void mousePressed() {
@@ -153,11 +159,16 @@ void mousePressed() {
 }
 
 void mouseReleased() {
-  int[] s = new int[5];
+  if(editor) {
+    int[] s = new int[5];
+    
+    s[0] = int(coord.x); s[1] = int(coord.y);
+    s[2] = mouseX/ss; s[3] = mouseY/ss;
+    s[4] = int(manualSpaceType);
   
-  s[0] = int(coord.x); s[1] = int(coord.y);
-  s[2] = mouseX/ss; s[3] = mouseY/ss;
-  s[4] = int(manualSpaceType);
-
-  spaces.add(s);
+    spaces.add(s);
+  } else {
+    Me.attack();
+  }
+  
 }
