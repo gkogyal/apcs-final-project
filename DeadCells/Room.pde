@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class Room{
   public int numConnections;
-  public ArrayList<Room> connects;
   public boolean[][] map;
   public PVector size;  
   public ArrayList<Entity> entities;
@@ -35,13 +34,13 @@ public class Room{
       x = 0;
       while (s.hasNextLine()){
         p = s.nextLine().split(" ");
-        connections.add(new PVector(Integer.valueOf(p[0]), Integer.valueOf(p[1]), 0));
+        connections.add(new PVector(Integer.parseInt(p[0]), Integer.parseInt(p[1]), 0));
         char test = p[2].charAt(0);
         switch (test){ 
           case 'u': connections.get(connections.size()).z = 0; break;
-          case 'd': connections.get(connections.size()).z = 1; break;
-          case 'l': connections.get(connections.size()).z = 2; break;
-          case 'r': connections.get(connections.size()).z = 3; break;
+          case 'r': connections.get(connections.size()).z = 1; break;
+          case 'd': connections.get(connections.size()).z = 2; break;
+          case 'l': connections.get(connections.size()).z = 3; break;
         }
         x++;
       }
