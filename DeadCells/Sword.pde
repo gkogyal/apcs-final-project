@@ -9,4 +9,5 @@ class Sword extends Item {
       e = new Entity(0,0,0,0,"ts attack func needs to be finished");
   }
   
+  
 }

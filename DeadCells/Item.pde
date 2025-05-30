@@ -1,19 +1,18 @@
-/*
 abstract class Item {
 
-  int classType;
-  int damage;
-  int DPS;
+  int classType,damage,atkspd,level,animType;
   ArrayList<PVector> modifier;
-  int level;
   String sprite;
   
-  void animateItem() {
-  
+  public Item(File f) {
+    decodeWeapon(f);
   }
+  
+  abstract void animateItem();
   
   void decodeWeapon(File f) {
   
-  }
+  };
+  
+  abstract void use(Entity e);
 }
-*/

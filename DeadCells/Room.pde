@@ -6,7 +6,7 @@ public class Room{
   ArrayList<PVector> connectPositions;
   
   public Room(File f){
-    decodeRoom(f)
+    decodeRoom(f);
   }
   
  void decodeRoom(File f) {
