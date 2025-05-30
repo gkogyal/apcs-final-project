@@ -1,15 +1,8 @@
-public class Camera{
-  PVector position;
-  PVector scale;
+class Camera {
+  PVector dim;
+  PVector loc;
   
-  
-  public Camera(){
-    
+  void snapToPlayer() {
     
   }
-  
-  
-  
-  
-  
 }
