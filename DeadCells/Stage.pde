@@ -1,6 +1,6 @@
 
 
-public class stage{
+public class Stage{
   private boolean[][] map;
   private int tileSize = 120;
   public HashMap collides;
@@ -34,6 +34,5 @@ public class stage{
     return s;
     
   }
-  
   
 }

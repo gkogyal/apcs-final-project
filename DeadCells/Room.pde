@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.Scanner;
-
 public class Room{
   public int numConnections;
   public boolean[][] map;
@@ -10,9 +9,6 @@ public class Room{
   
   public Room(File F){
     decodeRoom(F);
-    
-    
-    
   }
  
   
