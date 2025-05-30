@@ -14,5 +14,6 @@ abstract class Entity {
     
   };
   
+  
   abstract void attack();
 }

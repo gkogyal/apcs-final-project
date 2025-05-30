@@ -13,15 +13,15 @@ void keyPressed() {
   }
     
   if(keyCode=='F') {
-    heal();
+    //heal();
   }
 
   if(keyCode=='V') {
-    showInventory();
+    //showInventory();
   }
     
   if(keyCode=='M') {
-    showMap();
+    //showMap();
   }
     
   if(keyCode==ESC) {
@@ -31,11 +31,12 @@ void keyPressed() {
 
 void mousePressed() {
   if(mouseButton==LEFT) {
-    P.useHeld();
+    //P.useHeld();
   }
 }
 
 void mouseReleased() {
   
   
+}
 }

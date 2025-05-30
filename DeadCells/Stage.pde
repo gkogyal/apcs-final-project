@@ -7,7 +7,7 @@ public class Stage{
   public int threshold, totalConnects;
   public ArrayList<Room> rooms = new ArrayList<Room>();
   
-  public stage(int t){
+  public Stage(int t){
     map = new boolean[100][100];
     String StartRoom = dataPath("") + "/rooms/startStub.txt";
     addRoom(StartRoom, new PVector(25,25));

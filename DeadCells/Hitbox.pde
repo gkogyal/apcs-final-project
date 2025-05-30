@@ -7,7 +7,7 @@ class Hitbox {
   boolean highlightHitbox = false;
   
   public Hitbox(int center, int magnitude, int angle, int initAngle) {
-    this.center = center;
+    //this.center = center;
     this.magnitude = magnitude;
     this.angle = angle;
     this.initAngle = initAngle;

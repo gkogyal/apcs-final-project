@@ -7,7 +7,7 @@ class Enemy extends Entity {
   int enemyType,dmg,atkspd;
   
   public Enemy(int x, int y, int hp, int def, int type, int dmg, int atkspd) {
-    super(x,y,hp,def);
+    super(x,y,hp,def, "placeholder");
     
     this.enemyType = type;
     this.dmg = dmg;
@@ -26,7 +26,6 @@ class Enemy extends Entity {
   void reposition() {
   
   }
-  
   void idleMove() {
   
   }
