@@ -24,11 +24,15 @@ public class Stage{
   
   
   public String pullRandomRoom(){
-    String s = dataPath("");
-    int rand = 0;
-    if ( rooms.size() < threshold ) rand = (int) (Math.random() * 3);
-    else rand = (int) (Math.random() * 1);
-    
+    String s = dataPath("") + "/rooms/";
+    int rand;
+    if ( rooms.size() < threshold ) rand = (int) (Math.random() * 4);
+    else rand = (int) (Math.random() * 1) + 2;
+    switch(rand){
+     case 1: s += "t"; break;
+     case 2: s += "r"; break;
+     case 3: case 4: s += "h"; break;
+    }
     
     
     return s;
