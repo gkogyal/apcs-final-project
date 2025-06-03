@@ -1,10 +1,10 @@
 abstract class Popup {
-
-  void darkenScreen() {
+  String bgSprite;
+  PImage bg;
+  String textBgSprite;
+  PImage textBg;
   
-  }
-  
-  void guiDisplay() {
-  
+  void applyBlur() {
+    
   }
 }

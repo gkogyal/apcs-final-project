@@ -1,12 +1,33 @@
 class Bow extends Item {
+  /*
+  int lvl,dmg,atkspd;
+  int classType, animType;
+  String sprite;
   
-  public Bow(File f) {
-    super(f);
+  float lastHit = 0;
+  
+  Hitbox hb;
+  */
+  
+  public Bow(String fileStr) {
+    super(fileStr);
+    super.animType = 2;
   }
-  
-  @Override
-  use(Entity e) {
-      e = new Entity(0,0,0,0,"ts attack func needs to be finished");
+
+  public void animateItem() {
   }
-  
+
+  public void use() {
+    /*
+        TODO:
+     > Determine where to shoot (mouse or autoaim).
+     > If autoaim: which enemy is prioritized? and where on enemy should be aimed at?
+     > Create a hitbox on the arrow tip
+     >
+     */
+     
+     
+     
+     
+  }
 }
