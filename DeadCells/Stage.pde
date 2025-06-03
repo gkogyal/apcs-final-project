@@ -2,7 +2,7 @@
 
 public class Stage {
   private boolean[][] map;
-  private int tileSize = 120;
+  public static int tileSize = 120;
   public HashMap collides;
   public int threshold, totalConnects;
   public ArrayList<Room> rooms = new ArrayList<Room>();
