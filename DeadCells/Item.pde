@@ -1,18 +1,40 @@
 abstract class Item {
 
-  int classType,damage,atkspd,level,animType;
-  ArrayList<PVector> modifier;
+  int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
+  int classType, animType;
   String sprite;
   
-  public Item(File f) {
-    decodeWeapon(f);
+  float lastHit = 0;
+  
+  Hitbox hb;
+  
+  public Item(String f) {
+    decodeItem(f);
   }
   
-  abstract void animateItem();
+  void decodeItem(String itemName) {
+    try {
+      String fileName = "/data/weapons/" + itemName + "/data.txt";
+      Scanner s = new Scanner(new File(fileName));
+      lvl = s.nextInt();
+      dmg = s.nextInt();
+      atkspd = s.nextInt();
+      s.nextLine();
+      animType = s.nextInt();
+      animType = s.nextInt();
+      s.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  /*
+  Item File Example:
+  3 2 3 (lvl, dmg,atkspd)
+  2 1 (classType, animType)
+  20 150 (attackDist,chaseDist)
+  */
   
-  void decodeWeapon(File f) {
-  
-  };
-  
-  abstract void use(Entity e);
+  boolean canAttack() {
+    return (System.currentTimeMillis()-lastHit >= atkspd);
+  }
 }

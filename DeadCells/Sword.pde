@@ -1,13 +1,27 @@
 class Sword extends Item {
+  /*
+  int lvl,dmg,atkspd;
+  int classType, animType;
+  String sprite;
   
-  public Sword(File f) {
+  float lastHit = 0;
+  
+  Hitbox hb;
+  */
+  
+  public Sword(String f) {
     super(f);
   }
   
-  @Override
-  use(Entity e) {
-      e = new Entity(0,0,0,0,"ts attack func needs to be finished");
+  void use() {
+    boolean isRight = (abs(dir.x)/dir.x) ? 1 : -1;
+    hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
   }
+  
+  public void animateItem(){
+    
+  }
+  
   
   
 }

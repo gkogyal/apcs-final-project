@@ -1,20 +1,4 @@
-import java.io.File;
-import java.util.Scanner;
-
 public class Room{
-  int connections;
-  ArrayList<PVector> connectPositions;
-  
-  public Room(File f){
-    decodeRoom(f);
-  }
-  
- void decodeRoom(File f) {
- 
- }
-}
-  
-=======
   public int numConnections;
   public boolean[][] map;
   public PVector size;  
@@ -23,9 +7,6 @@ public class Room{
   
   public Room(File F){
     decodeRoom(F);
-    
-    
-    
   }
  
   
@@ -63,4 +44,3 @@ public class Room{
     } 
   }
 }
->>>>>>> 170f5c41541df1258686b7e6bf62001844600729

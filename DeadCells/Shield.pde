@@ -1,12 +1,27 @@
-class Sword extends Item {
+class Shield extends Item {
+  /*
+  int lvl,dmg,atkspd;
+  int classType, animType;
+  String sprite;
   
-  public Sword(File f) {
-    super(f);
+  float lastHit = 0;
+  
+  Hitbox hb;
+  */
+  
+  public Shield(String fileString) {
+    super(fileString);
+    super.animType = 1;
   }
   
-  @Override
-  use(Entity e) {
-      e = new Entity(0,0,0,0,"ts attack func needs to be finished");
+  void use() {
+    // PLAYER.def = 80;
   }
+  
+  void animateItem(){
+    
+    
+  }
+  
   
 }
