@@ -17,10 +17,10 @@ public class Stage {
     Halls  = new File( dataPath("") + "/rooms/" + t + "/h").listFiles().length;
     Rooms  = new File( dataPath("") + "/rooms/" + t + "/r").listFiles().length;
     dRooms = new File( dataPath("") + "/rooms/" + t + "/d").listFiles().length;
-    map = new boolean[100][100];
+    map = new boolean[200][50];
     Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
     addRoom(t, startRoom, new PVector(0, 0));
-    threshold = t;
+    threshold = t; // arbitrary stage size controls
   }
 
 
@@ -29,13 +29,13 @@ public class Stage {
     println("size" + rooms.size());
     rooms.add(r);
     //resizing map if the map is out of bounds
-    coord = resizeMap(coord, r.size);
+    //coord = resizeMap(coord, r.size);
 
     // writing room data to map
     for (int row = 0; row < r.size.x; row++)
       for (int col = 0; col < r.size.y; col++)
-        if ( r.map[col][row] ) this.map[(int)coord.x + col][(int)coord.y + row] = true;
-
+        if ( coord.x > 0 && coord.y > 0 && r.map[col][row] ) this.map[(int)coord.x + col][(int)coord.y + row] = true;
+    
     // adding more rooms at the connection points
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
@@ -67,6 +67,7 @@ public class Stage {
               int cVal = (int)(coord.x + r.connections.get(i).x + col - CorrC.x);
               // if the place on the map anywhere in the new room's dimension is taken, dimension is invalid
               if ( rVal >= 0 && cVal >= 0 && rVal < map.length && cVal < map[0].length && map[rVal][cVal] ) foundValidDim = false;
+              foundValidDim = true;
             }
         }
         if (foundValidDim || attempts > 59) break; // successfully found fitting room
@@ -135,19 +136,19 @@ public class Stage {
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() < threshold)? ((int) (Math.random() * 3)) : ((int) (Math.random() * 1) + 2);
+    rand = (rooms.size() < threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 3));
     println("rand: " + rand + " " +(int) (Math.random() * 3));
     switch(rand) {
-    case 1:
+    case 0:
       s += "t/" + (int) (Math.random() * tHalls);
       break; // select a type of t hall
-    case 2:
+    case 1:
       s += "r/" + (int) (Math.random() * Rooms);
       break;  // select a type of room with 2 or more exits
-    case 3:
+    case 2:
       s += "h/" + (int) (Math.random() * Halls);
       break;  // select a type of hallway
-    case 4:
+    case 3:
       s += "d/" + (int) (Math.random() * dRooms);
       break; // select a type of dead end room
     }
