@@ -5,12 +5,11 @@ class InputHandler {
 
   void keys(Camera cam) {
     if (keyPressed) {
-      if (key == 'w' || key == 'W') {
+      if ( key == 'W' || key == 'w') {
+        
         cam.loc.y += 10;
-        // modify direction to go up or down
-        // modify character sprite to: prepareJump sprite (if on ground) or falling anim
+        
       }
-
       if ( key == 'S' || key == 's') {
         cam.loc.y -= 10;
       }
@@ -20,6 +19,13 @@ class InputHandler {
       }
       if (key == 'D' || key == 'd') {
         cam.loc.x -= 10;
+      }
+      if (key=='-' && cam.f > 1) {
+        cam.f += 0.1;
+      }
+
+      if (key=='=') {
+        cam.f -= 0.1;
       }
 
       if (key=='F') {
