@@ -29,7 +29,7 @@ public class Stage {
     println("size" + rooms.size());
     rooms.add(r);
     //resizing map if the map is out of bounds
-    coord = resizeMap(coord, r.size);
+    //coord = resizeMap(coord, r.size);
 
     // writing room data to map
     for (int row = 0; row < r.size.x; row++)
@@ -135,19 +135,19 @@ public class Stage {
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() < threshold)? ((int) (Math.random() * 3)) : ((int) (Math.random() * 1) + 2);
+    rand = (rooms.size() > threshold)? ((int) (Math.random() * 3)) : ((int) (Math.random() * 2) + 2);
     println("rand: " + rand + " " +(int) (Math.random() * 3));
     switch(rand) {
-    case 1:
+    case 0:
       s += "t/" + (int) (Math.random() * tHalls);
       break; // select a type of t hall
-    case 2:
+    case 1:
       s += "r/" + (int) (Math.random() * Rooms);
       break;  // select a type of room with 2 or more exits
-    case 3:
+    case 2:
       s += "h/" + (int) (Math.random() * Halls);
       break;  // select a type of hallway
-    case 4:
+    case 3:
       s += "d/" + (int) (Math.random() * dRooms);
       break; // select a type of dead end room
     }
