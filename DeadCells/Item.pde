@@ -35,7 +35,7 @@ abstract class Item {
   2 1 (classType, animType)
   */
   
-  boolean canAttack() {
+  boolean canUse() {
     return (frameCount-lastUse >= atkspd);
   }
   

@@ -14,8 +14,11 @@ class Sword extends Item {
   }
   
   void use() {
-    boolean isRight = ((abs(PLAYER.dir.x)/PLAYER.dir.x)==1) ? true : false;
-    hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
+    if (canUse()) {
+      boolean isRight = PLAYER.dir.x>0;
+      hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
+      lastUse = frameCount;
+    }
   }
   
 }

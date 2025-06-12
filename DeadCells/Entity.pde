@@ -16,7 +16,7 @@ abstract class Entity {
     if(highlightEntity) {
       highlight();
     }
-  };
+  }
   
   void toggleHighlight() {highlightEntity = !highlightEntity;}
   
@@ -47,6 +47,11 @@ abstract class Entity {
       this.P1 = P3; // updates top left coord
       this.P2 = PVector.add(P1,dim); // updates bottom right coord
     }
+  }
+  
+  void applyGravity() {
+    dir.y+=0.5;
+    reposition(new PVector(0, dir.y));
   }
   
   void die() {

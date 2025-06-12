@@ -38,7 +38,7 @@ class Pause extends Popup {
     
     fill(255, 255, 0);
     textSize(30);
-    text("Press U to Quit   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
+    text("Press ESC to Quit   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
     text("Press a number between 1-9 to change Difficulty",7*dW/15,15*dH/16);
     
     fill(255);
@@ -47,7 +47,7 @@ class Pause extends Popup {
   
   void displayMap() {
     setBg();
-    drawMap(STAGE.map, Util.addPVScalar(topLeft,borderWidth), Util.addPVScalar(dim,2*borderWidth));
+    drawMap(STAGE.map, Util.addPVScalar(topLeft,borderWidth), Util.addPVScalar(dim,-2*borderWidth));
   }
   
   void displayInv() {
@@ -56,11 +56,11 @@ class Pause extends Popup {
   }
   
   void drawMap(boolean[][] arr, PVector P1, PVector d) {
+    rectMode(CORNER);
     float cellWidth = d.x / arr[0].length;
     float cellHeight = d.y / arr.length;
     
     noStroke();
-    
     for (int y = 0; y < arr.length; y++) {
         for (int x = 0; x < arr[y].length; x++) {
             if (arr[y][x]) {

@@ -4,12 +4,14 @@ final float maxVel = 5;
 
 boolean up,down,left,right;
 
-PVector direction;
+PVector d;
 
 boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked;
 int difficultyClicked;
 
 boolean special1;
+
+boolean shieldActivated;
 
 PVector mousePos;
 String mouseButtonClicked; // mouse button clicked
@@ -20,7 +22,7 @@ void check() {
   left = keyCode == 'A' || keyCode == 'a';
   right = keyCode == 'D' || keyCode == 'd';
   
-  direction = new PVector(int(up)-int(down),int(right)-int(left)); // 0 if both are same, 1 if up/right, -1 if down/left
+  d = new PVector(int(up)-int(down),int(right)-int(left)); // 0 if both are same, 1 if up/right, -1 if down/left
   
   healClicked = keyCode=='F' || keyCode == 'f';
   invClicked = keyCode=='V' || keyCode == 'v';
@@ -28,6 +30,8 @@ void check() {
   escapeClicked = keyCode==ESC || keyCode == ESC;
   nextBgClicked = keyCode=='L' || keyCode=='l';
   difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
+  
+  shieldActivated = (PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) && PLAYER.hotbar[PLAYER.heldInd].dmg==0;
   
   mousePos = new PVector(mouseX, mouseY);
   mouseButtonClicked = (mouseButton==RIGHT) ? "RIGHT" : "LEFT";
@@ -40,9 +44,7 @@ void keyPressed() {
   if(escapeClicked) {
     ctrlZ();
   }
-  
-  PLAYER.dir = PVector.mult(direction,vertVel);
-  
+    
   if(invClicked || mapClicked) {
     POPUP_IND = 1;
     POPUPS[POPUP_IND].setType(invClicked ? "inv" : "map");
@@ -50,7 +52,21 @@ void keyPressed() {
   
   switch(POPUP_IND) {
     case -1:
-      PLAYER.dir = PVector.mult(direction,vertVel);
+      
+      if(d.x!=0) {
+        if(d.x==1) {
+          PLAYER.anim.setState("runRight");
+        } else if(d.x==-1) {
+          PLAYER.anim.setState("runLeft");
+        }
+      } else if (d.y!=0) {
+        if(d.y==1) {
+          PLAYER.anim.setState("up");
+        } else if(d.x==-1) {
+          PLAYER.anim.setState("down");
+        }
+      } 
+      
       if(healClicked) {
         PLAYER.heal();
       }
@@ -70,10 +86,10 @@ void mouseClicked() {
     case -1:
       if(mouseButton==LEFT) {
         PLAYER.swapSlot(0);
-        PLAYER.attack();
+        PLAYER.prepareAttack();
       } else if(mouseButton==RIGHT) {
         PLAYER.swapSlot(1);
-        PLAYER.attack();
+        PLAYER.prepareAttack();
       }
       break;
     case 0:
@@ -118,5 +134,15 @@ void mouseClicked() {
         }
       }
       break;
+  }
+}
+
+void mouseReleased() {
+  switch(POPUP_IND) {
+    case -1:
+      //shield hold
+      if(PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) {
+        PLAYER.hotbar[PLAYER.heldInd].dmg = -1;
+      }
   }
 }

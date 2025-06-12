@@ -108,12 +108,8 @@ class Enemy extends Entity {
   }
   
   void moveTo(PVector P3) {
-    /*
-    TODO:
-    Enemy checks if P3 is valid -> if true, then move there
-    
-    How to move there?
-    */
+    PVector path = PVector.sub(P3, P1).normalize().mult(2);
+    reposition(path);
   }
   
   void takeDmg(int dmg) {

@@ -1,11 +1,12 @@
 class Animation {
   
-  String basePath = "/entities/";
+  String basePath = dataPath("") + "/entities/";
   
   ArrayList<String> states = new ArrayList<String>(){{
     // universal sprite states:
     add("idle");
-    add("run");
+    add("runLeft");
+    add("runRight");
     add("up");
     add("down");
     add("damaged");

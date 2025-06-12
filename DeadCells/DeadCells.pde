@@ -3,7 +3,8 @@ import java.util.Scanner;
 
 ArrayList<Hitbox> hitboxes;
 Player PLAYER;
-Stage STAGE; int stageNumber = 0;
+Stage STAGE; int stageNumber;
+Camera CAMERA;
 Popup[] POPUPS;
 int POPUP_IND; // if -1, then nothing to show
 
@@ -29,6 +30,7 @@ void draw(){
   
   if(POPUP_IND==-1) {
     // running the game
+    CAMERA.render(STAGE);
   } else if (POPUP_IND==0) {
     POPUPS[POPUP_IND].display();
     // show starting screen or loading screen
@@ -55,6 +57,9 @@ void ctrlZ() {
   dH = displayHeight;
   
   STAGE = new Stage();
+  stageNumber = 0;
+  
+  CAMERA = new Camera();
   
   PLAYER = new Player(0,0);
   
@@ -64,12 +69,13 @@ void ctrlZ() {
     (new Loading()), (new Pause()), (new Upgrade())
   };
   
-  POPUP_IND = 1;
-  POPUPS[POPUP_IND].setType("map");
+  POPUP_IND = 0;
+  POPUPS[POPUP_IND].setType("start");
   
   PLAYER.hotbar[0] = new Sword("iceSword");
   PLAYER.hotbar[1] = new Shield("woodenShield");
-  
+  PLAYER.hotbar[2] = new Special("bearTrap");
+  PLAYER.hotbar[3] = new Special("bombTrap");
   
   /*
     TODO:

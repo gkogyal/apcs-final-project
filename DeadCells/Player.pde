@@ -15,14 +15,11 @@ class Player extends Entity {
   final PVector dim = new PVector(50,80);
   final float healInc = 0.03; // Alters how much hp heal() gives.
   
-  final String[] extraAnims = new String[]{
-    "ground"
-    ,"highJump"
-  };
-  
   Item[] hotbar = new Item[4]; // 0 = main weapon; 1 = shield; 2 = trap; 3 = trap;
   int heldInd = 0;
   int maxHeals=7,heals;
+  
+  boolean isAttacking;
     
   PVector stats = new PVector(1,1,1); // brutality, tactics, survival
   
@@ -46,20 +43,17 @@ class Player extends Entity {
   
   void move() {
     reposition(dir);
-    
-    /*
-    add gravity
-    */
   }
   
   void attack() {
-    hotbar[heldInd].use();
+    if(isAttacking) {
+      hotbar[heldInd].use(); 
+      isAttacking = false;
+    }
   }
   
-  void groundSmash() {
-    /*
-    do a high jump
-    */
+  void prepareAttack() {
+    isAttacking = true;
   }
   
   void swapSlot(int n) {
@@ -85,8 +79,9 @@ class Player extends Entity {
   
   
   void takeDmg(int dmg) {
-    boolean shieldActivated = hotbar[heldInd] instanceof Shield && hotbar[heldInd].dmg==0;
+    // shieldActivated() is a global var in InputHandler.pde
     hp -= dmg * (shieldActivated ? Util.defense(stats)*3/4 : 1.0) / maxHp;
+    if(shieldActivated) hotbar[heldInd].dmg = -1;
     if(hp<=0) die();
   }
 }

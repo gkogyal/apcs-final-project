@@ -8,24 +8,15 @@ class Shield extends Item {
   
   Hitbox hb;
   */
-  
-  boolean shieldUp = false;
-  
+    
   public Shield(String fileString) {
     super(fileString);
     super.animType = 1;
   }
   
   void use() {
-    activate();
-  }
-  
-  void activate() {
-    shieldUp = true;
-    lastUse = frameCount;
-  }
-  
-  void lowerShield() {
-    shieldUp = false;
+    if(canUse()) {
+      dmg=0;
+    }
   }
 }
