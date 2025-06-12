@@ -5,7 +5,7 @@ InputHandler inp;
 void setup() {
   fullScreen();
   c = new Camera();
-  s = new Stage(1);
+  s = new Stage(40, 1);
   inp = new InputHandler();
   //printSmap();
 }

@@ -2,9 +2,12 @@
 
 public class Stage {
   private boolean[][] map;
+  private int[][] Pmap;
+  private Enemy[][] Emap;
   public HashMap collides;
   public int threshold, totalConnects;
   public ArrayList<Room> rooms = new ArrayList<Room>();
+
 
   private int tHalls;
   private int Halls;
@@ -12,16 +15,16 @@ public class Stage {
   private int dRooms;
 
 
-  public Stage(int t) {
-    tHalls = new File( dataPath("") + "/rooms/" + t + "/t").listFiles().length;
-    Halls  = new File( dataPath("") + "/rooms/" + t + "/h").listFiles().length;
-    Rooms  = new File( dataPath("") + "/rooms/" + t + "/r").listFiles().length;
-    dRooms = new File( dataPath("") + "/rooms/" + t + "/d").listFiles().length;
-    map = new boolean[400][400];
-    Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
+  public Stage(int t, int nm) {
+    tHalls = new File( dataPath("") + "/rooms/" + nm + "/t").listFiles().length;
+    Halls  = new File( dataPath("") + "/rooms/" + nm + "/h").listFiles().length;
+    Rooms  = new File( dataPath("") + "/rooms/" + nm + "/r").listFiles().length;
+    dRooms = new File( dataPath("") + "/rooms/" + nm + "/d").listFiles().length;
+    map = new boolean[40][40];
+    Room startRoom = new Room( new File( dataPath("") + "/rooms/" + nm + "/startStub.txt") );
     //Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/t/2.txt") );
-    addRoom(t, startRoom, new PVector(50, 50));
     threshold = t; // arbitrary stage size controls
+    addRoom(nm, startRoom, new PVector(20, 20));
   }
 
 
@@ -32,7 +35,7 @@ public class Stage {
     println("size" + rooms.size());
     rooms.add(r);
     //resizing map if the map is out of bounds
-    //coord = resizeMap(coord, r.size);
+    coord = resizeMap(coord, r.size);
 
     // writing room data to map
     for (int row = 0; row < r.size.x; row++)
@@ -43,10 +46,10 @@ public class Stage {
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
       println("whichtodo: " + r.connections.get(i));
-      if (rooms.size() > 500) break;   //TEMP SIZE HARD LIMIT COUNTER
+      if (rooms.size() > 200) break;   //TEMP SIZE HARD LIMIT COUNTER
       attempts ++;
       Room t = new Room(new File(pullRandomRoom1(stage)));
-      //resizeMap(coord, t.size);
+      resizeMap(coord, t.size);
       PVector CorrC = new PVector(0, 0, 0);
       boolean foundValidDir = false;
       boolean foundValidDim = false;
@@ -61,6 +64,8 @@ public class Stage {
             println("Here is the correct connection: " + CorrC);
             t.connections.remove(x);
           }
+          /* scrapped proportions checker
+          
         // checking if the room fits onto the map (only if it has correct direction)
         if (foundValidDir) {
           println("cool" );
@@ -94,7 +99,9 @@ public class Stage {
               foundValidDim = true;
             }
         }
-        if (foundValidDim || attempts > 25) break; // successfully found fitting room
+        
+        */
+        if (foundValidDir || attempts > 25) break; // successfully found fitting room
         attempts++;
         println("Failure" + attempts);
         foundValidDir = false;
@@ -186,18 +193,18 @@ void printRmap(Room r) {
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() < threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 2));
+    rand = (rooms.size() >= threshold)? ((int) (Math.random() * 3) + 2) : ((int) (Math.random() * 3));
     switch(rand) {
     case 0:
       s += "t/" + (int) (Math.random() * tHalls);
       break; // select a type of t hall
-    case 1:
+    case 1: case 2:
       s += "r/" + (int) (Math.random() * Rooms);
       break;  // select a type of room with 2 or more exits
-    case 2:
+    case 3:
       s += "h/" + (int) (Math.random() * Halls);
       break;  // select a type of hallway
-    case 3:
+    default:
       s += "d/" + (int) (Math.random() * dRooms);
       break; // select a type of dead end room
     }

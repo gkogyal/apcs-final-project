@@ -7,25 +7,25 @@ class InputHandler {
     if (keyPressed) {
       if ( key == 'W' || key == 'w') {
         
-        cam.loc.y += 10;
+        cam.loc.y += 100;
         
       }
       if ( key == 'S' || key == 's') {
-        cam.loc.y -= 10;
+        cam.loc.y -= 100;
       }
 
       if (key == 'A' || key == 'a') {
-        cam.loc.x += 10;
+        cam.loc.x += 100;
       }
       if (key == 'D' || key == 'd') {
-        cam.loc.x -= 10;
+        cam.loc.x -= 100;
       }
       if (key=='-' && cam.f > 1) {
-        cam.f += 0.1;
+        cam.f += 1;
       }
 
       if (key=='=') {
-        cam.f -= 0.1;
+        cam.f -= 1;
       }
 
       if (key=='F') {
