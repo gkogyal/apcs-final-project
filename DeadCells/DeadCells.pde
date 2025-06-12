@@ -7,6 +7,7 @@ void setup() {
   c = new Camera();
   s = new Stage(1);
   inp = new InputHandler();
+  //printSmap();
 }
 
 

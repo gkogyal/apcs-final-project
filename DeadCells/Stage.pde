@@ -17,10 +17,10 @@ public class Stage {
     Halls  = new File( dataPath("") + "/rooms/" + t + "/h").listFiles().length;
     Rooms  = new File( dataPath("") + "/rooms/" + t + "/r").listFiles().length;
     dRooms = new File( dataPath("") + "/rooms/" + t + "/d").listFiles().length;
-    map = new boolean[200][200];
-     Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
+    map = new boolean[400][400];
+    Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
     //Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/t/2.txt") );
-    addRoom(t, startRoom, new PVector(15, 15));
+    addRoom(t, startRoom, new PVector(50, 50));
     threshold = t; // arbitrary stage size controls
   }
 
@@ -43,7 +43,7 @@ public class Stage {
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
       println("whichtodo: " + r.connections.get(i));
-      if (rooms.size() > 20 ) break;   //TEMP SIZE HARD LIMIT COUNTER
+      if (rooms.size() > 500) break;   //TEMP SIZE HARD LIMIT COUNTER
       attempts ++;
       Room t = new Room(new File(pullRandomRoom1(stage)));
       //resizeMap(coord, t.size);
@@ -65,25 +65,61 @@ public class Stage {
         if (foundValidDir) {
           println("cool" );
           foundValidDim = true;
+          
+          
+          int rVal = 0;
+          int cVal = 0;
+          int direction = (int) CorrC.z;
+          if (rooms.size() <= 1)
+            switch(direction){
+              case 0: rVal =(int) (coord.y + r.connections.get(i).y - CorrC.y + 1); cVal = (int) (coord.x + r.connections.get(i).x - CorrC.x); break; // up 
+              case 1: rVal =(int) (coord.y + r.connections.get(i).y - CorrC.y); cVal = (int) (coord.x + r.connections.get(i).x - CorrC.x - 1); break; // right
+              case 2: rVal =(int) (coord.y + r.connections.get(i).y - CorrC.y - 1); cVal = (int) (coord.x + r.connections.get(i).x - CorrC.x); break; // down
+              case 3: rVal =(int) (coord.y + r.connections.get(i).y - CorrC.y); cVal = (int) (coord.x + r.connections.get(i).x - CorrC.x + 1); break; // left
+            }
+           else{
+            switch(direction){
+              case 0: rVal =(int) (coord.x + r.connections.get(i).y - CorrC.y + 1); cVal = (int) (coord.y + r.connections.get(i).x - CorrC.x); break; // up 
+              case 1: rVal =(int) (coord.x + r.connections.get(i).y - CorrC.y); cVal = (int) (coord.y + r.connections.get(i).x - CorrC.x - 1); break; // right
+              case 2: rVal =(int) (coord.x + r.connections.get(i).y - CorrC.y - 1); cVal = (int) (coord.y + r.connections.get(i).x - CorrC.x); break; // down
+              case 3: rVal =(int) (coord.x + r.connections.get(i).y - CorrC.y); cVal = (int) (coord.y + r.connections.get(i).x - CorrC.x + 1); break; // left
+            }
+           }
+      
+          
           for (int row = 0; row < t.size.y; row++)
             for (int col = 0; col < t.size.x; col++) {
-              int rVal = (int)(coord.y + r.connections.get(i).y + row - CorrC.y);
-              int cVal = (int)(coord.x + r.connections.get(i).x + col - CorrC.x);
               // if the place on the map anywhere in the new room's dimension is taken, dimension is invalid
-              if ( rVal >= 0 && cVal >= 0 && rVal < map.length && cVal < map[0].length && map[rVal][cVal] ) foundValidDim = false;
+              if ( rVal >= 0 || cVal >= 0 || rVal < map.length || cVal < map[0].length || map[rVal + row][cVal + col] ) foundValidDim = false;
               foundValidDim = true;
             }
         }
         if (foundValidDim || attempts > 25) break; // successfully found fitting room
         attempts++;
         println("Failure" + attempts);
+        foundValidDir = false;
         t = new Room(new File(pullRandomRoom1(stage))); // room not valid, so selecting another room at random
       }
 
       // adding the room, augumenting to get the correct placement
-
-      if (attempts <= 25 && CorrC.z % 2 == 0) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y + 1 , coord.y + r.connections.get(i).y - CorrC.x - 1));
-      if (attempts <= 25 && CorrC.z % 2 == 1) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y - 2, coord.y + r.connections.get(i).y - CorrC.x + 2));
+      if(attempts < 250){
+      int direction = (int) CorrC.z;
+      if (rooms.size() <= 1)
+        switch(direction){
+          case 0: addRoom(stage, t, new PVector(coord.y + r.connections.get(i).y - CorrC.y + 1, coord.x + r.connections.get(i).x - CorrC.x)); break; // up 
+          case 1: addRoom(stage, t, new PVector(coord.y + r.connections.get(i).y - CorrC.y, coord.x + r.connections.get(i).x - CorrC.x - 1)); break; // right
+          case 2: addRoom(stage, t, new PVector(coord.y + r.connections.get(i).y - CorrC.y - 1, coord.x + r.connections.get(i).x - CorrC.x)); break; // down
+          case 3: addRoom(stage, t, new PVector(coord.y + r.connections.get(i).y - CorrC.y, coord.x + r.connections.get(i).x - CorrC.x + 1)); break; // left
+        }
+       else{
+        switch(direction){
+          case 0: addRoom(stage, t, new PVector(coord.x + r.connections.get(i).y - CorrC.y + 1, coord.y + r.connections.get(i).x - CorrC.x)); break; // up 
+          case 1: addRoom(stage, t, new PVector(coord.x + r.connections.get(i).y - CorrC.y, coord.y + r.connections.get(i).x - CorrC.x - 1)); break; // right
+          case 2: addRoom(stage, t, new PVector(coord.x + r.connections.get(i).y - CorrC.y - 1, coord.y + r.connections.get(i).x - CorrC.x)); break; // down
+          case 3: addRoom(stage, t, new PVector(coord.x + r.connections.get(i).y - CorrC.y, coord.y + r.connections.get(i).x - CorrC.x + 1)); break; // left
+        }
+       }
+      }
       r.connections.remove(i);
     }
   }
@@ -150,8 +186,7 @@ void printRmap(Room r) {
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() > threshold)?  ((int) (Math.random() * 2) + 1) : ((int) (Math.random() * 2));
-    println("rand: " + rand + " " +(int) (Math.random() * 3));
+    rand = (rooms.size() < threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 2));
     switch(rand) {
     case 0:
       s += "t/" + (int) (Math.random() * tHalls);
