@@ -1,12 +1,14 @@
 public class Camera {
   private final int dW = displayWidth, dL = displayHeight;
-  public double f = 20;
+  public double f = 2;
   public int tileSize = (int) (dL/f);
   public PVector loc = new PVector(0,0);
   private int leftMost = (int) (-loc.y) / tileSize;
   private int topMost = (int) (-loc.x) / tileSize;
 
-  public Camera() {
+  public Camera(Stage s) {
+    loc = s.startCoords.mult(2);
+    println(s.startCoords);
   }
 
   public void snapToPlayer() {
@@ -20,27 +22,21 @@ public class Camera {
       for (int c = topMost; c <= topMost + (dW/tileSize) + 1; c++)
         if ( r > 0 && c > 0 && r < stage.map.length && c < stage.map[0].length && stage.map[r][c]){
           noStroke();
-          fill(#395E58);
+          fill(#000147);
           square(loc.x + c * tileSize, loc.y + r * tileSize, tileSize);
-          if (r - 1 > 0 && !stage.map[r-1][c]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize, loc.y + r * tileSize, tileSize + tileSize/20, tileSize/20);
+          fill(#004F4F);
+          if (r - 1 > 0 && !stage.map[r-1][c])
+            rect(loc.x + c * tileSize, loc.y + (r) * tileSize, tileSize + tileSize/20, tileSize/20);
+          if (r + 1 < stage.map.length && !stage.map[r+1][c])
+            rect(loc.x + c * tileSize,loc.y + (r + 1)* tileSize, tileSize + tileSize/20, tileSize/20);
+          if (c - 1 > 0 && !stage.map[r][c-1])
+            rect(loc.x + (c) * tileSize - tileSize/20, loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);
+          if (c + 1 < stage.map[0].length && !stage.map[r][c+1])
+            rect(loc.x + (c + 1) * tileSize,loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);       
+            
+          if(r == stage.startCoords.x && c == stage.startCoords.y) 
+            square(loc.x + c * tileSize, loc.y + r * tileSize, tileSize);
           }
-          if (r + 1 < stage.map.length && !stage.map[r+1][c]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize,loc.y + (r +1)* tileSize, tileSize + tileSize/20, tileSize/20);
-          }
-          if (c - 1 > 0 && !stage.map[r][c-1]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize, loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);
-          }
-          if (c + 1 < stage.map[0].length && !stage.map[r][c+1]){
-            fill(#F15E58);
-            rect(loc.x + (c + 1) * tileSize,loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);
-          }
-          
-          
-        }
   }
   
 }

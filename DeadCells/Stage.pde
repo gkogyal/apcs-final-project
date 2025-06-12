@@ -7,8 +7,8 @@ public class Stage {
   public HashMap collides;
   public int threshold, totalConnects;
   public ArrayList<Room> rooms = new ArrayList<Room>();
-
-
+  public PVector startCoords = new PVector(20,20);
+  
   private int tHalls;
   private int Halls;
   private int Rooms;
@@ -21,10 +21,11 @@ public class Stage {
     Rooms  = new File( dataPath("") + "/rooms/" + nm + "/r").listFiles().length;
     dRooms = new File( dataPath("") + "/rooms/" + nm + "/d").listFiles().length;
     map = new boolean[40][40];
+    Pmap = new int[40][40];
     Room startRoom = new Room( new File( dataPath("") + "/rooms/" + nm + "/startStub.txt") );
     //Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/t/2.txt") );
     threshold = t; // arbitrary stage size controls
-    addRoom(nm, startRoom, new PVector(20, 20));
+    addRoom(nm, startRoom, startCoords);
   }
 
 
@@ -152,7 +153,6 @@ public class Stage {
       println("r");
       direction = 'r';
     }
-    boolean temp[][];
     int w = 0, x = 0, y = 0, z = 0;
     switch(direction) {
     case 'u':
@@ -170,12 +170,17 @@ public class Stage {
       x = 20;
       break;
     }
-    temp = new boolean[map.length + w][map[0].length + x];
+    startCoords = new PVector(startCoords.x + y, startCoords.y + z);
+    boolean[][] temp = new boolean[map.length + w][map[0].length + x];
+    int[][] Ptemp = new int[map.length + w][map[0].length + x];
     for (int r = 0; r < map.length; r++)
-      for (int c = 0; c < map[0].length; c++)
+      for (int c = 0; c < map[0].length; c++){
         temp[r+y][c+z] = map[r][c];
-
-        map = temp;
+        Ptemp[r+y][c+z] = Pmap[r][c];
+      }
+        
+    Pmap = Ptemp;
+    map = temp;
     return coord;
   }
   

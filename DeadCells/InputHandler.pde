@@ -21,11 +21,11 @@ class InputHandler {
         cam.loc.x -= 100;
       }
       if (key=='-' && cam.f > 1) {
-        cam.f += 1;
+        cam.f += .1;
       }
 
       if (key=='=') {
-        cam.f -= 1;
+        cam.f -= .1;
       }
 
       if (key=='F') {
