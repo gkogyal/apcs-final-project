@@ -24,8 +24,8 @@ public class Camera {
           fill(#FFFFFF);
           square(loc.x + c * tileSize, loc.y + r * tileSize, tileSize);
           fill(#FF11FF);
-          textSize(dL/10);
-          text( r + "-" + c, n+=100, 100);
+          textSize(dL/70);
+          text( r + "-" + c, n+=dL/30, 20);
           text("" + loc, loc.x + c * tileSize, loc.y + r * tileSize);
         }
   }

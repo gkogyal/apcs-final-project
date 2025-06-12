@@ -18,14 +18,17 @@ public class Stage {
     Rooms  = new File( dataPath("") + "/rooms/" + t + "/r").listFiles().length;
     dRooms = new File( dataPath("") + "/rooms/" + t + "/d").listFiles().length;
     map = new boolean[200][50];
-    Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
-    addRoom(t, startRoom, new PVector(0, 0));
+     Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
+    //Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/t/2.txt") );
+    addRoom(t, startRoom, new PVector(15, 15));
     threshold = t; // arbitrary stage size controls
   }
 
 
 
   public void addRoom(int stage, Room r, PVector coord) {
+    println("Origin left - 1: " + coord);
+    printRmap(r);
     println("size" + rooms.size());
     rooms.add(r);
     //resizing map if the map is out of bounds
@@ -39,7 +42,8 @@ public class Stage {
     // adding more rooms at the connection points
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
-      if (rooms.size() > 20) break;
+      println("whichtodo: " + r.connections.get(i));
+      if (rooms.size() > 500 ) break;   //TEMP SIZE HARD LIMIT COUNTER
       attempts ++;
       Room t = new Room(new File(pullRandomRoom1(stage)));
       //resizeMap(coord, t.size);
@@ -78,7 +82,7 @@ public class Stage {
 
       // adding the room, augumenting to get the correct placement
 
-      if (attempts <= 25) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y, coord.y + r.connections.get(i).y - CorrC.x));
+      if (attempts <= 25) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y - 1 , coord.y + r.connections.get(i).y - CorrC.x + 1));
       //r.connections.remove(i);
       println(coord.x);
     }
@@ -131,12 +135,22 @@ public class Stage {
         map = temp;
     return coord;
   }
+  
+void printRmap(Room r) {
+  for (int i = 0; i < r.map.length; i++) {
+    for (int j = 0; j < r.map[0].length; j++)
+      print((r.map[i][j])? "[]" : "  " );
+    println();
+  }
+  println(r.connections);
+}
+
 
 
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() < threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 3));
+    rand = (rooms.size() > threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 3));
     println("rand: " + rand + " " +(int) (Math.random() * 3));
     switch(rand) {
     case 0:
