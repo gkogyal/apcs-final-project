@@ -12,7 +12,6 @@ public class Camera {
   public void snapToPlayer() {
   }
   
-  
   public void render( Stage stage ) {
     tileSize = (int) (dL/f);
     leftMost =  (int) (-loc.y) / tileSize;
@@ -23,10 +22,10 @@ public class Camera {
         if ( r > 0 && c > 0 && r < stage.map.length && c < stage.map[0].length && stage.map[r][c]){
           fill(#FFFFFF);
           square(loc.x + c * tileSize, loc.y + r * tileSize, tileSize);
-          fill(#FF11FF);
-          textSize(dL/70);
-          text( r + "-" + c, n+=dL/30, 20);
-          text("" + loc, loc.x + c * tileSize, loc.y + r * tileSize);
+          //fill(#FF11FF);
+          //textSize(dL/70);
+          //text( r + "-" + c, n+=dL/30, 20);
+          //text("" + loc, loc.x + c * tileSize, loc.y + r * tileSize);
         }
   }
   

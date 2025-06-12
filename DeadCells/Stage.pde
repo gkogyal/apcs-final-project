@@ -17,7 +17,7 @@ public class Stage {
     Halls  = new File( dataPath("") + "/rooms/" + t + "/h").listFiles().length;
     Rooms  = new File( dataPath("") + "/rooms/" + t + "/r").listFiles().length;
     dRooms = new File( dataPath("") + "/rooms/" + t + "/d").listFiles().length;
-    map = new boolean[200][50];
+    map = new boolean[200][200];
      Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/startStub.txt") );
     //Room startRoom = new Room( new File( dataPath("") + "/rooms/" + t + "/t/2.txt") );
     addRoom(t, startRoom, new PVector(15, 15));
@@ -43,7 +43,7 @@ public class Stage {
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
       println("whichtodo: " + r.connections.get(i));
-      if (rooms.size() > 500 ) break;   //TEMP SIZE HARD LIMIT COUNTER
+      if (rooms.size() > 20 ) break;   //TEMP SIZE HARD LIMIT COUNTER
       attempts ++;
       Room t = new Room(new File(pullRandomRoom1(stage)));
       //resizeMap(coord, t.size);
@@ -58,7 +58,7 @@ public class Stage {
           if (t.connections.get(x).z == (r.connections.get(i).z + 2) % 4 ) {
             foundValidDir = true;
             CorrC = t.connections.get(x);
-            println(CorrC);
+            println("Here is the correct connection: " + CorrC);
             t.connections.remove(x);
           }
         // checking if the room fits onto the map (only if it has correct direction)
@@ -74,7 +74,7 @@ public class Stage {
               foundValidDim = true;
             }
         }
-        if (foundValidDim || attempts > 59) break; // successfully found fitting room
+        if (foundValidDim || attempts > 25) break; // successfully found fitting room
         attempts++;
         println("Failure" + attempts);
         t = new Room(new File(pullRandomRoom1(stage))); // room not valid, so selecting another room at random
@@ -82,9 +82,9 @@ public class Stage {
 
       // adding the room, augumenting to get the correct placement
 
-      if (attempts <= 25) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y - 1 , coord.y + r.connections.get(i).y - CorrC.x + 1));
-      //r.connections.remove(i);
-      println(coord.x);
+      if (attempts <= 25 && CorrC.z % 2 == 0) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y + 1 , coord.y + r.connections.get(i).y - CorrC.x - 1));
+      if (attempts <= 25 && CorrC.z % 2 == 1) addRoom(stage, t, new PVector(coord.x + r.connections.get(i).x - CorrC.y - 2, coord.y + r.connections.get(i).y - CorrC.x + 2));
+      r.connections.remove(i);
     }
   }
 
@@ -150,7 +150,7 @@ void printRmap(Room r) {
   public String pullRandomRoom1(int stage) {
     String s = dataPath("") + "/rooms/" + stage + "/";
     int rand;
-    rand = (rooms.size() > threshold)?  ((int) (Math.random() * 2) + 2) : ((int) (Math.random() * 3));
+    rand = (rooms.size() > threshold)?  ((int) (Math.random() * 2) + 1) : ((int) (Math.random() * 2));
     println("rand: " + rand + " " +(int) (Math.random() * 3));
     switch(rand) {
     case 0:
