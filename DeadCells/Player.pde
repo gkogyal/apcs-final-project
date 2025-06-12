@@ -1,36 +1,40 @@
 class Player extends Entity {
   /*
-  int hp,def;
+  int maxHp;
+  float hp;
   PVector P1,P2,dim,dir;
-  String sprite;
+  
+  Animation anim;
+  boolean highlightEntity = false;
+  
+  boolean alive = true;
   */
   
   final int defaultHP = 100;
   final int defaultDef = 0;
   final PVector dim = new PVector(50,80);
+  final float healInc = 0.03; // Alters how much hp heal() gives.
   
-  int maxhp;
-  Item[] hotbar = new Item[4];
+  final String[] extraAnims = new String[]{
+    "ground"
+    ,"highJump"
+  };
+  
+  Item[] hotbar = new Item[4]; // 0 = main weapon; 1 = shield; 2 = trap; 3 = trap;
   int heldInd = 0;
-  int heals;
-  
-  int healInc = 10; // TODO: Alter how much hp healInc gives
+  int maxHeals=7,heals;
+    
+  PVector stats = new PVector(1,1,1); // brutality, tactics, survival
   
   public Player(int x, int y) {
-    hp = defaultHP;
-    maxhp = defaultHP;
+    maxHp = defaultHP; hp = 1.0;
     P1 = new PVector(x,y);
     P2 = PVector.add(P1,dim);
     
-    
-    hp = defaultHP;
-    maxhp = defaultHP;
-    
-    hp = 100;
-    
+    anim = new Animation(false,"player");
     
     dir = new PVector(0,0);
-    maxhp = hp;
+    hp = 1;
     heals = 7;
     heldInd = 0;
   }
@@ -41,49 +45,48 @@ class Player extends Entity {
   }
   
   void move() {
-  
-  }
-
-  @Override
-  void drawEntity() {
-  
+    reposition(dir);
+    
+    /*
+    add gravity
+    */
   }
   
   void attack() {
-    held.use();
+    hotbar[heldInd].use();
   }
   
   void groundSmash() {
-  
+    /*
+    do a high jump
+    */
   }
   
-  /*
-  What does this do??  
-  void swapInvPos(int slot) {}
-  */
+  void swapSlot(int n) {
+    if(n<4 && n>-1) {
+      heldInd = n;
+    }
+  }
   
   void heal() {
     if(heals>0) {
-      hp = Math.max(maxhp,hp+healInc);
+      hp = Math.max(1,hp+healInc);
       heals--;
-    } else {
-      /*
-      TODO:
-      Add way to notify player they have no heals.
-      */
     }
+  }
+  
+  void resetHeals() {
+    heals = maxHeals;
+  }
+  
+  void setMaxHeals(int n) {
+    maxHeals = n;
   }
   
   
   void takeDmg(int dmg) {
-    hp -= dmg;
+    boolean shieldActivated = hotbar[heldInd] instanceof Shield && hotbar[heldInd].dmg==0;
+    hp -= dmg * (shieldActivated ? Util.defense(stats)*3/4 : 1.0) / maxHp;
     if(hp<=0) die();
-  }
-  
-  void die() {
-    /*
-    TODO:
-    Player level restarts
-    */
   }
 }

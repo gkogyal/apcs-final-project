@@ -2,9 +2,9 @@ abstract class Item {
 
   int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
   int classType, animType;
-  String sprite;
+  String itemName;
   
-  float lastHit = 0;
+  int lastUse = 0;
   
   Hitbox hb;
   
@@ -14,14 +14,16 @@ abstract class Item {
   
   void decodeItem(String itemName) {
     try {
-      String fileName = "/data/weapons/" + itemName + "/data.txt";
+      this.itemName = itemName;
+      String fileName = dataPath("") + "/weapons/" + itemName + "/data.txt";
       Scanner s = new Scanner(new File(fileName));
-      lvl = s.nextInt();
-      dmg = s.nextInt();
-      atkspd = s.nextInt();
+      
+      lvl = s.nextInt(); dmg = s.nextInt(); atkspd = s.nextInt();
       s.nextLine();
+      
+      classType = s.nextInt();
       animType = s.nextInt();
-      animType = s.nextInt();
+      
       s.close();
     } catch (Exception e) {
       e.printStackTrace();
@@ -29,12 +31,17 @@ abstract class Item {
   }
   /*
   Item File Example:
-  3 2 3 (lvl, dmg,atkspd)
+  3 2 4 (lvl, dmg,atkspd)
   2 1 (classType, animType)
-  20 150 (attackDist,chaseDist)
   */
   
   boolean canAttack() {
-    return (System.currentTimeMillis()-lastHit >= atkspd);
+    return (frameCount-lastUse >= atkspd);
   }
+  
+  PImage getSprite() {
+    return loadImage("weapons/" + itemName + "/sprite.png");
+  }
+  
+  abstract void use();
 }

@@ -21,7 +21,7 @@ class Hitbox {
   // 1 point -> trap
   public Hitbox(Item item, PVector P1) {
     this.hbItem = item;
-    this.hitboxType = item.sprite;
+    this.hitboxType = item.itemName;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -32,7 +32,7 @@ class Hitbox {
   // 1 point, 1 direction -> arrow tip
   public Hitbox(Item item, PVector P1, float dir) {
     this.hbItem = item;
-    this.hitboxType = item.sprite;
+    this.hitboxType = item.itemName;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -43,7 +43,7 @@ class Hitbox {
   // 1 point, direction boolean, and duration -> sword slash
   public Hitbox(Item item, PVector P1, boolean isRight, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.sprite;
+    this.hitboxType = item.itemName;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -77,10 +77,9 @@ class Hitbox {
   // abstract timed rectangular hitbox
   public Hitbox(Item item, PVector P1, PVector P2, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.sprite;
+    this.hitboxType = item.itemName;;
     this.atkDmg = item.dmg;
     this.origin = P1;
-    
     this.duration = duration;
     points[0] = P2;
   }
@@ -90,17 +89,9 @@ class Hitbox {
     if(millis()-startTime>duration) deactivate();
     checkAllCollisions();
     switch(hitboxType) {
-      case("bow"):
-        /*
-        TODO:
-        Add parabolic physics
-        */
-        break;
       case("trap"):
-        /*
-        TODO:
-        Add display for trap
-        */
+        PVector dim = PVector.sub(points[0],origin);
+        if(active) image(hbItem.getSprite(), origin.x, origin.y, dim.x, dim.y);
         break;
       default:
         break;
@@ -116,27 +107,22 @@ class Hitbox {
     
     switch(hitboxType) {
       case("trap"): rect(origin.x,origin.y,dimTrap.x,dimTrap.y); break;
-      case("bow"): circle(origin.x,origin.y,radius/2); break;
       case("sword"): triangle(origin.x,origin.y,points[0].x,points[0].y,points[1].x,points[1].y); break;
       default: rect(origin.x,origin.y,abs(origin.x-points[0].x),abs(origin.y-points[0].y)); break;
     }
   }
   
   void activate() {
-    active = false;
+    active = true; HITBOXES.add(this);
   }
   
   void activateTimed() {
-    active = true;
+    activate();
     startTime = millis();
   }
   
   void deactivate() {
-    active = false;
-    /*
-    TODO:
-    Remove this hitbox from main arraylist of hitboxes
-    */
+    active = false; // marks as deactivated
   }
   
   boolean checkCollision(Entity e) {
@@ -146,8 +132,6 @@ class Hitbox {
     switch(hitboxType) {
       case("trap"):
         return Util.intersectRectRect(origin,points[0],E1,E2);
-      case("bow"):
-        return Util.intersectCircleRect(origin,radius,E1,E2);
       case("sword"):
         return Util.intersectTriRect(origin,points[0],points[1],E1,E2);
       default:
@@ -157,10 +141,11 @@ class Hitbox {
   
   //  Loop through all enemies: if checkCollision() -> takeDmg()
   void checkAllCollisions() {
-    for(Enemy enemy : enemies) {
+    for(Enemy enemy : STAGE.ENEMIES) {
       if(checkCollision(enemy)) {
         enemy.takeDmg(atkDmg);
       }
     }
+    deactivate();
   }
 }

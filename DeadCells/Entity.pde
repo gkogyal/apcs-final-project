@@ -1,18 +1,20 @@
 abstract class Entity {
-  int hp,def;
+  int maxHp;
+  float hp; // stored as percent of maxHp
   PVector P1,P2,dim,dir = new PVector(0,0); // P1,P2 = top left, bottom right points of hurtbox
-  String sprite;
+  
+  Animation anim;
   
   boolean highlightEntity = false; // used to outline entities -- defaulted to false
   
+  boolean alive = true;
+  
   void drawEntity() {
-    String entitySprite = "/entities/" + this.sprite + ".png"; // get file path for enemy sprite
-    PImage img = loadImage(entitySprite); // instantiate PImage to output on window
-    img.resize(int(abs(P1.x-P2.x)),int(abs(P1.y-P2.y))); // resize image to size of entity
-    image(img,P1.x,P1.y); // display image with top left corner at P1
+    PImage sprite = anim.getFrame();
+    sprite.resize(int(dim.x),int(dim.y));
+    image(sprite,P1.x,P1.y);
     if(highlightEntity) {
-      noFill(); stroke(255,0,0);
-      rect(P1.x,P1.y,dim.x,dim.y); // red hitbox around entity
+      highlight();
     }
   };
   
@@ -20,17 +22,35 @@ abstract class Entity {
   
   void toggleHighlight(boolean b) {highlightEntity = b;}
   
+  void highlight() {
+    noFill(); stroke(255,0,0);
+    rect(P1.x,P1.y,dim.x,dim.y); // red hitbox around entity
+  }
+  
   boolean canExistAt(PVector P3) {
     PVector dP1 = PVector.div(P1,float(tileSize)).add(P3);
     PVector dP2 = PVector.div(P2,float(tileSize)).add(P3);
     
+    // checks tiles which are considerably larger than pixels and entities
+    // hence will actually only access map est. 1-10 times;
     for(int x = int(dP1.x); x<int(dP2.x); x++) {
       for(int y = int(dP1.y); y<int(dP2.y); y++) {
-        if(!map[x][y]) return false; // assumes that a 1 means valid tile
+        if(!STAGE.map[x][y]) return false; // assumes that a 1 means valid tile
       }
     }
     
     return true; // if no invalid tiles, then must be true
+  }
+  
+  void reposition(PVector P3) {
+    if(this.canExistAt(P3)) {
+      this.P1 = P3; // updates top left coord
+      this.P2 = PVector.add(P1,dim); // updates bottom right coord
+    }
+  }
+  
+  void die() {
+    alive = false;
   }
   
   abstract void attack();
@@ -38,6 +58,4 @@ abstract class Entity {
   abstract void update();
   
   abstract void takeDmg(int dmg);
-  
-  abstract void die();
 }

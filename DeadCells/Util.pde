@@ -9,10 +9,102 @@ static class Util{
      return -1;
   }
   
-  /* GEOMETRY */
+  static <T> int locateArrL(T target, ArrayList<T> arr) {
+    for(int i = 0; i<arr.size(); i++) {
+      if(target.equals(arr.get(i))) return i;
+    }
+    return -1;
+  }
+  
+  /* PATH/FILE MANIPULATION */
+  
+  int getFileLen(String path) {
+    File f = new File(path);
+    if(f.isDirectory()) {
+      return f.list().length;
+    } else return 0;
+  }
+  
+  /* P MANIPULATION */
+  
+  static PImage blur(PImage img) {
+    PImage blurred = img;
+    
+    final float k = 1.0/9;
+    final float[][] kernel = new float[][] {
+       {k,k,k}
+      ,{k,k,k}
+      ,{k,k,k}
+    };
+    
+    /*
+    TODO:
+     > APPLY A BLUR
+    */
+    
+    return blurred;
+  }
+  
+  static PVector addPVScalar(PVector P1, int scalar) {
+    return PVector.add(P1, new PVector(scalar,scalar));
+  }
+  
+  /* COORDINATE PLANE ALGEBRA */
+  
+  static float quadratic(double x, double a, double b, double c) {
+    return (float)(c + b*x + a*x*x);
+  }
+  
+  static float ln(double x, double a, double b, double c) {
+    return (float)(c+a*log((float)(b*x))/log((float)(2.71828)));
+  }
+  
+  /* UPGRADE QUADRATICS */
+  
+  static float brutalityHpMult(PVector stats) {
+    return quadratic(stats.x,-0.005,0.67,0.34);
+  }
+  
+  static float tacticsHpMult(PVector stats) {
+    return quadratic(stats.y,-0.0114,0.534,0.48);
+  }
+  
+  static float survivalHpMult(PVector stats) {
+    return (0.7*stats.z)+0.3;
+  }
+  
+  static float hpMult(PVector stats) {
+    return brutalityHpMult(stats)*tacticsHpMult(stats)*survivalHpMult(stats);
+  }
+  
+  static float brutalityDmgMult(PVector stats) {
+    return DmgMult(int(stats.x-1));
+  }
+  
+  static float tacticsDmgMult(PVector stats) {
+    return DmgMult(int(stats.y-1));
+  }
+  
+  static float survivalDmgMult(PVector stats) {
+    return DmgMult(int(stats.z-1));
+  }
+  
+  static float DmgMult(int level) {
+    return pow(1.15,level-1);
+  }
+  
+  static float defense(PVector stats) {
+    return (float)(stats.z*0.07);
+  }
+  
+  /* COORDINATE PLANE GEOMETRY */
   
   static float distance(PVector A, PVector B) {
     return sqrt(pow(A.x-B.x,2) + pow(A.y-B.y,2));
+  }
+  
+  static boolean incRange(int x, int A, int B) {
+    return x>=min(A,B) && x<=max(A,B);
   }
   
   static boolean incRange(float x, float A, float B) {

@@ -1,10 +1,10 @@
 class Sword extends Item {
   /*
-  int lvl,dmg,atkspd;
+  int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
   int classType, animType;
-  String sprite;
+  String itemName;
   
-  float lastHit = 0;
+  int lastUse = 0;
   
   Hitbox hb;
   */
@@ -14,14 +14,8 @@ class Sword extends Item {
   }
   
   void use() {
-    boolean isRight = (abs(dir.x)/dir.x) ? 1 : -1;
+    boolean isRight = ((abs(PLAYER.dir.x)/PLAYER.dir.x)==1) ? true : false;
     hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
   }
-  
-  public void animateItem(){
-    
-  }
-  
-  
   
 }

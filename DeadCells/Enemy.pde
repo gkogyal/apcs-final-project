@@ -1,44 +1,60 @@
 class Enemy extends Entity {
   /*
-  int hp,def;
-  PVector P1,P2,dim,dir;
-  String sprite;
+  int maxHp;
+  float hp;
+  PVector P1,P2,dim,dir = new PVector(0,0);
+  
+  Animation anim;
+  boolean highlightEntity = false;
+  
+  boolean alive = true;
   */
-  int dmg,atkspd;
-  int enemyType;
-  int attackDist,chaseDist;
   
   final float repositionRange = 8;
   final int maxRepositionAttempts = 18;
+  
+  int dmg,atkspd;
+  int enemyType; // 0=brutality, 1=tactics, 2=survival
+  int attackDist,chaseDist;
+  
+  int lastAtk = 0;
 
-  public Enemy(int x, int y, String fileStr) {
-    sprite = fileStr;
+  public Enemy(int x, int y, String enemyName) {
+    anim = new Animation(true,enemyName);
     this.P1 = new PVector(x,y); // P1 stores top left coord of entity hurtbox
-    decodeEnemy(fileStr); // fills entity information
+    decodeEnemy(enemyName); // fills entity information
     this.P2 = PVector.add(P1,dim); // updates P2 to store bottom right coord of entity hurtbox
+    hp = 1; // start with 100% hp
+    
+    STAGE.ENEMIES.add(this);
   }
   
   /*
   Enemy File Example:
-  3 2 (P2.x, P2.y)
-  100 20 (hp, def)
+  3 2 (dim.x, dim.y)
+  100 (maxHp)
   30 10 (dmg, atkspd)
-  3 (enemyType)
+  2 (enemyType)
   20 150 (attackDist,chaseDist)
   */
-  void decodeEnemy(String fileStr) {
+  void decodeEnemy(String enemyName) {
     try {
-      Scanner s = new Scanner(new File(fileStr));
-      sprite = fileStr;
-      dim = new PVector(s.nextInt(),s.nextInt());
+      Scanner s = new Scanner(new File(enemyName));
+      
+      dim = new PVector(s.nextInt(),s.nextInt()); 
+      
       s.nextLine();
-      hp = s.nextInt();
-      def = s.nextInt();
+      maxHp = s.nextInt(); hp = maxHp;
+      
       s.nextLine();
-      dmg = s.nextInt();
-      atkspd = s.nextInt();
+      dmg = s.nextInt(); atkspd = s.nextInt(); 
+      
       s.nextLine();
-      enemyType = s.nextInt();
+      enemyType = s.nextInt(); 
+      
+      s.nextLine();
+      attackDist = s.nextInt(); chaseDist = s.nextInt(); 
+      
       s.close();
     } catch(Exception e) {
       e.printStackTrace();
@@ -69,11 +85,15 @@ class Enemy extends Entity {
   }
   
   void attack() {
-    
+    if(frameCount-lastAtk >= atkspd) {
+      int trueDmg = (dmg*DIFFICULTY)/4;
+      PLAYER.takeDmg(trueDmg);
+      lastAtk = frameCount;
+    }
   }
   
   void chasePlayer() {
-    
+    moveTo(PLAYER.P1);
   }
   
   void idleMove() {
@@ -83,13 +103,11 @@ class Enemy extends Entity {
       P3 = PVector.random2D().setMag(random(repositionRange));
       P3.x = Math.max(0,Math.min(ROWS,floor(P3.x)));
       P3.y = Math.max(0,Math.min(ROWS,floor(P3.y)));
-      if(this.canExistAt(P3)) {
-        reposition(P3);
-      }
+      reposition(P3);
     }
   }
   
-  void reposition(PVector P3) {
+  void moveTo(PVector P3) {
     /*
     TODO:
     Enemy checks if P3 is valid -> if true, then move there
@@ -99,14 +117,7 @@ class Enemy extends Entity {
   }
   
   void takeDmg(int dmg) {
-    hp -= dmg;
+    hp -= dmg/maxHp;
     if(hp<=0) die();
-  }
-  
-  void die() {
-    /*
-    TODO:
-      > Delete itself from arraylist of enemies
-    */
   }
 }

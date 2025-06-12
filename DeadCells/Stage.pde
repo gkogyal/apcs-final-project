@@ -1,36 +1,19 @@
-public class Stage{
-  private boolean[][] map;
-  private int tileSize = 120;
-  public HashMap collides;
-  public int threshold, totalConnects;
-  public ArrayList<Room> rooms = new ArrayList<Room>();
+public class Stage {
+  // TEMPLATE STAGE CODE
+  // ONLY SO NO PSEUDO ERRORS RETURNED
+  // DO NOT USE
+  boolean[][] map = new boolean[100][100];
+  int tileSize = 120;
+  ArrayList<Enemy> ENEMIES = new ArrayList<Enemy>();
   
-  public Stage(int t){
-    map = new boolean[100][100];
-    String StartRoom = dataPath("") + "/rooms/startStub.txt";
-    addRoom(StartRoom, new PVector(25,25));
-    threshold = t;
-  }
-    
-   
-  
-  public void addRoom(String s, PVector coord){
-    Room r = new Room(new File(s));
-    rooms.add(r);
-    
+  public Stage() {
   }
   
-  
-  public String pullRandomRoom(){
-    String s = dataPath("");
-    int rand = 0;
-    if ( rooms.size() < threshold ) rand = (int) (Math.random() * 3);
-    else rand = (int) (Math.random() * 1);
-    
-    
-    
-    return s;
-    
+  void generateMap() {
+    for(int i = 0; i<map.length; i++) {
+      for(int j = 0; j<map[0].length; j++) {
+        map[i][j] = random(1)>0.6942;
+      }
+    }
   }
-  
 }
