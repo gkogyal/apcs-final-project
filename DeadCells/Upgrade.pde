@@ -1,4 +1,4 @@
-class Upgrade extends Popup {
+sclass Upgrade extends Popup {
   /*
   String basePath = dataPath("") + "/popups/";
   String bgStr;
