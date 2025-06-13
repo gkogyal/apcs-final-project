@@ -23,10 +23,8 @@ class Player extends Entity {
   PVector stats = new PVector(1,1,1); // brutality, tactics, survival
   
   String[] extraAnims = new String[] {
-    "swordLeft"
-    ,"swordRight"
-    ,"shieldLeft"
-    ,"shieldRight"
+    "_sword"
+    ,"_shield"
   };
   
   public Player() {
@@ -86,7 +84,7 @@ class Player extends Entity {
   }
   
   boolean isFacingRight() {
-    return closestEnemy().P1.x > this.P1.x;
+    return (PLAYER.dir.x == 0) ? (closestEnemy().P1.x > this.P1.x) : PLAYER.dir.x>0;
   }
   
   Enemy closestEnemy() {

@@ -5,8 +5,7 @@ class Animation {
   ArrayList<String> states = new ArrayList<String>(){{
     // universal sprite states:
     add("idle");
-    add("runLeft");
-    add("runRight");
+    add("_run"); // underscore as first character means rotates based on player dir
     add("up");
     add("down");
   }};
@@ -70,6 +69,14 @@ class Animation {
   }
   
   PImage getFrame() {
-    return loadImage(path + "/" + (frameCount/10)%getCycleLen() + ".png");
+    PImage frame = loadImage(path + "/" + (frameCount/10)%getCycleLen() + ".png");
+    
+    if(state.charAt(0)=='_' && !PLAYER.isFacingRight()) {
+      pushMatrix();
+      scale(-1,1); // if left, then flip
+      popMatrix();
+    }
+    
+    return frame;
   }
 }

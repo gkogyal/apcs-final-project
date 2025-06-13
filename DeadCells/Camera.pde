@@ -37,6 +37,9 @@ public class Camera {
         text("E", e.P1.x + 20, e.P1.y + 20);
       }
     }
+    for (UpgradeAltar altar : STAGE.ALTARS) {
+      altar.drawAltar();
+    }
 
     popMatrix();
   }

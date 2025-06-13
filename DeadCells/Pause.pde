@@ -78,6 +78,8 @@ class Pause extends Popup {
     for(Entity e : STAGE.ENEMIES) {
       markSqMap(P1, e.P2, cellWidth, cellHeight, color(255,0,0));
     }
+    
+    for(Entity e : 
   }
 
   void markSqMap(PVector P1, PVector P2, float cellWidth, float cellHeight, color c) {

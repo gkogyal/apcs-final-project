@@ -2,6 +2,7 @@ public class Stage {
   boolean[][] map;
   int ROWS,COLS;
   ArrayList<Enemy> ENEMIES = new ArrayList<Enemy>();
+  ArrayList<UpgradeAltar> ALTARS = new ArrayList<UpgradeAltar>();
   String basePath;
   String num;
   String fileName;
@@ -56,7 +57,15 @@ public class Stage {
     }
     return null;
   }
-  
+
+  void spawnAltars(int count) {
+    for (int i = 0; i < count; i++) {
+      PVector spawnPos = findValidSpawn();
+      if (spawnPos != null) {
+        ALTARS.add(new UpgradeAltar((int)(spawnPos.x/tileSize), (int)(spawnPos.y/tileSize)));
+      }
+    }
+  }
   
   
 }

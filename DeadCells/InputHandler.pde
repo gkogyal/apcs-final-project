@@ -5,7 +5,7 @@ final float maxVel = 5;
 
 boolean up,down,left,right;
 
-boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked;
+boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked,restartClicked,altarClicked;
 int difficultyClicked;
 
 boolean special1;
@@ -31,6 +31,8 @@ void checkInputs() {
     mapClicked = key=='M' || key == 'm';
     escapeClicked = key=='K' || key == 'k';
     nextBgClicked = key=='L' || key=='l';
+    restartClicked = key == 'r' || key == 'R';
+    altarClicked = key == 'e' || key == 'E';
     difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
   }
   
@@ -54,7 +56,7 @@ void keyPressed() {
     POPUPS[POPUP_IND].setType(invClicked ? "inv" : "map");
   }
   
-  if ((key == 'r' || key == 'R') && deathTime != -1) {
+  if (restartClicked && deathTime != -1) {
     ctrlZ();
     deathTime = -1;
   }
@@ -63,6 +65,11 @@ void keyPressed() {
     case -1:      
       if(healClicked) {
         PLAYER.heal();
+      }
+      if (key == 'e' || key == 'E') {
+        for (UpgradeAltar altar : STAGE.ALTARS) {
+          altar.interact();
+        }
       }
       break;
     case 1:

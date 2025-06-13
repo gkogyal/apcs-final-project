@@ -44,7 +44,7 @@ void draw(){
   }
   
   else {
-  
+
     checkInputs();
     if(POPUP_IND==-1) {
       // running the game
@@ -53,6 +53,10 @@ void draw(){
       for(Enemy e : STAGE.ENEMIES) {
         e.update();
       }
+      for (UpgradeAltar altar : STAGE.ALTARS) {
+        altar.update();
+      }
+
       drawHUD();
       /*
       TODO:
@@ -100,6 +104,7 @@ void ctrlZ() {
   PLAYER = new Player(800,1404);
   
   STAGE.spawnEnemies(3 + 2*stageNumber);
+  STAGE.spawnAltars(1);
   
   for(Enemy e : STAGE.ENEMIES) {
     println(e.P1);
@@ -114,10 +119,9 @@ void ctrlZ() {
   PLAYER.hotbar = new Item[]{
     (new Sword("iceSword")), (new Shield("woodenShield")), (new Special("bearTrap")), (new Special("bombTrap"))
   };
-  
+
   POPUP_IND = 0;
   POPUPS[POPUP_IND].setType("start");
-  
   
   
   /*
