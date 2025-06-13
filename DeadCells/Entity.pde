@@ -110,6 +110,26 @@ abstract class Entity {
     alive = false;
   }
   
+  void carveSpawn(PVector P1) {
+    int TileX = (int)(P1.x / tileSize);
+    int TileY = (int)(P1.y / tileSize);
+    
+    int N = 15;
+    
+    // bounds for NxN area
+    int startX = max(0, TileX - N/2);
+    int endX = min(STAGE.map[0].length - 1, TileX + N/2);
+    int startY = max(0, TileY - N/2);
+    int endY = min(STAGE.map.length - N/2, TileY + N/2);
+    
+    // carving :D
+    for (int y = startY; y <= endY; y++) {
+      for (int x = startX; x <= endX; x++) {
+        STAGE.map[y][x] = true;
+      }
+    }
+  }
+  
   abstract void attack();
   
   abstract void update();

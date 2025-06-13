@@ -8,6 +8,8 @@ class Player extends Entity {
   boolean highlightEntity = false;
   
   boolean alive = true;
+  
+  int lastAtk;
   */
   
   final int defaultHP = 100;
@@ -18,7 +20,9 @@ class Player extends Entity {
   int heldInd = 0;
   int maxHeals=7,heals;
   
-  boolean isAttacking;
+  float effectiveHp;
+  
+  boolean isAttacking = false,carved=false;
     
   PVector stats = new PVector(1,1,1); // brutality, tactics, survival
   
@@ -28,8 +32,8 @@ class Player extends Entity {
   };
   
   public Player() {
-    maxHp = defaultHP; hp = 1.0;
-    P1 = new PVector(dW/2,dH/2);
+    maxHp = defaultHP; hp = 1.0; effectiveHp = maxHp;
+    P1 = new PVector(int(random(dW/2)),int(random(dH/2)));
     P2 = PVector.add(P1,dim);
     
     anim = new Animation(false,"player");
@@ -58,23 +62,26 @@ class Player extends Entity {
   }
   
   void update(){
+    if(STAGE.map!=null && !carved) {
+      carveSpawn(P1); carveSpawn(P2);
+      carved = true;
+    }
     checkInputs();
     move();
+    attack();
     applyGravity();
     updateAnimation();
     drawEntity();
   }
   
   void updateAnimation() {
-    if(swordSwung) {
-      anim.setState("sword" +  (isFacingRight() ? "Right" : "Left"));
+    if(swordSwung && frameCount - lastAtk < 10) {
+      anim.setState("_sword");
     } else if(shieldActivated) {
-      anim.setState("shield" +  (isFacingRight() ? "Right" : "Left"));
-    } else if(left && !right) {
-        anim.setState("runLeft");
-    } else if(right && !left) {
-        anim.setState("runRight");
-    } else if(up && !down) {
+      anim.setState("_shield");
+    } else if(left != right) {
+        anim.setState("_run");
+    }  else if(up && !down) {
         anim.setState("up");
     } else if(down && !up) {
         anim.setState("down");
@@ -102,6 +109,11 @@ class Player extends Entity {
   
   void move() {
     
+    if(swordSwung && frameCount - lastAtk < 10) { // Prevent movement during attack
+        dir = new PVector(0,0);
+        return;
+    }
+    
     dir = new PVector(0,0);
     
     if(up) { dir.y -= horizVel;}
@@ -118,14 +130,7 @@ class Player extends Entity {
   }
   
   void attack() {
-    if(isAttacking) {
-      hotbar[heldInd].use(); 
-      isAttacking = false;
-    }
-  }
-  
-  void prepareAttack() {
-    isAttacking = true;
+    hotbar[heldInd].use(); 
   }
   
   void swapSlot(int n) {
@@ -149,10 +154,10 @@ class Player extends Entity {
     maxHeals = n;
   }
   
-  
   void takeDmg(int dmg) {
     // shieldActivated() is a global var in InputHandler.pde
-    hp -= dmg * (shieldActivated ? Util.defense(stats)*3/4 : 1.0) / maxHp;
+    effectiveHp = maxHp * Util.hpMult(stats);
+    hp -= dmg * (shieldActivated ? Util.defense(stats)*3/4 : 1.0) / effectiveHp;
     if(shieldActivated) hotbar[heldInd].dmg = -1;
     if(hp<=0) die();
   }

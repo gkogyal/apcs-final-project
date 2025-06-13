@@ -30,6 +30,7 @@ class Enemy extends Entity {
     this.P1 = new PVector(x,y); // P1 stores top left coord of entity hurtbox
     decodeEnemy(enemyName); // fills entity information
     this.P2 = PVector.add(P1,dim); // updates P2 to store bottom right coord of entity hurtbox
+    carveSpawn(P1); carveSpawn(P2); 
   }
   
   /*
@@ -112,5 +113,9 @@ class Enemy extends Entity {
   void takeDmg(int dmg) {
     hp -= dmg/maxHp;
     if(hp<=0) die();
+  }
+  
+  void instaKill() {
+    takeDmg(2*maxHp);
   }
 }

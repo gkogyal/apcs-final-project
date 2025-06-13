@@ -10,7 +10,7 @@ class Hitbox {
   String hitboxType;
   int atkDmg;
   
-  boolean active;
+  boolean active = false;
   float duration = -1; // if -1 > permanent hitbox
   float startTime;
  
@@ -129,13 +129,24 @@ class Hitbox {
     PVector E1 = e.P1;
     PVector E2 = e.P2;
     
-    switch(hitboxType) {
+    switch(hbItem.id) {
       case("trap"):
         return Util.intersectRectRect(origin,points[0],E1,E2);
       case("sword"):
         return Util.intersectTriRect(origin,points[0],points[1],E1,E2);
       default:
         return Util.intersectRectRect(origin,points[0],E1,E2);
+    }
+  }
+  
+  void activate(float x) {
+    if(x == 3) {
+      for(Enemy e : STAGE.ENEMIES) {
+        if(Util.distance(PLAYER.P1, e.P1)<=60) {
+          e.hp -= 0.5;
+          println(e.hp);
+        }
+      }
     }
   }
   
@@ -151,5 +162,5 @@ class Hitbox {
     if(hitEnemy || (duration > 0 && millis()-startTime>duration)) {
         deactivate();
     }
-}
+  }
 }

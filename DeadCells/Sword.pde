@@ -17,7 +17,9 @@ class Sword extends Item {
   void use() {
     if (canUse()) {
       hb = new Hitbox(this,PLAYER.P1,PLAYER.isFacingRight(),0.2);
-      lastUse = frameCount;
+      hb.activate(3);
+      this.lastUse = frameCount;
+      PLAYER.lastAtk = frameCount; 
     }
   }
   

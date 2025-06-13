@@ -69,14 +69,29 @@ class Animation {
   }
   
   PImage getFrame() {
-    PImage frame = loadImage(path + "/" + (frameCount/10)%getCycleLen() + ".png");
+    String framePath = path;
     
-    if(state.charAt(0)=='_' && !PLAYER.isFacingRight()) {
-      pushMatrix();
-      scale(-1,1); // if left, then flip
-      popMatrix();
+    // Handle directional states
+    if(state.charAt(0) == '_') {
+        if(!PLAYER.isFacingRight()) {
+            // For left-facing, we'll flip the image
+            PImage frame = loadImage(framePath + "/" + (frameCount/10)%getCycleLen() + ".png");
+            frame.loadPixels();
+            PImage flipped = createImage(frame.width, frame.height, ARGB);
+            flipped.loadPixels();
+            
+            // Flip horizontally
+            for(int y = 0; y < frame.height; y++) {
+                for(int x = 0; x < frame.width; x++) {
+                    flipped.pixels[y * frame.width + (frame.width - 1 - x)] = frame.pixels[y * frame.width + x];
+                }
+            }
+            flipped.updatePixels();
+            return flipped;
+        }
     }
     
-    return frame;
-  }
+    // Default case - no flipping needed
+    return loadImage(framePath + "/" + (frameCount/10)%getCycleLen() + ".png");
+}
 }

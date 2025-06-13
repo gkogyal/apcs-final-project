@@ -29,6 +29,9 @@ public class Camera {
     
     pushMatrix();
     translate(-loc.x, -loc.y);
+    for (UpgradeAltar altar : STAGE.ALTARS) {
+      altar.drawAltar();
+    }
     PLAYER.drawEntity();
     for(Enemy e : STAGE.ENEMIES) {
       if(e.alive) e.drawEntity();
@@ -36,9 +39,6 @@ public class Camera {
         fill(255,0,0);
         text("E", e.P1.x + 20, e.P1.y + 20);
       }
-    }
-    for (UpgradeAltar altar : STAGE.ALTARS) {
-      altar.drawAltar();
     }
 
     popMatrix();

@@ -76,10 +76,14 @@ class Pause extends Popup {
     markSqMap(P1, PLAYER.P1, cellWidth, cellHeight, color(0,255,0));
     
     for(Entity e : STAGE.ENEMIES) {
-      markSqMap(P1, e.P2, cellWidth, cellHeight, color(255,0,0));
+      markSqMap(P1, e.P1, cellWidth, cellHeight, color(255,0,0));
     }
     
-    for(Entity e : 
+    for(UpgradeAltar a : STAGE.ALTARS) {
+      if(!a.used) {
+        markSqMap(P1, a.position, cellWidth, cellHeight, color(255,0,255));
+      }
+    }
   }
 
   void markSqMap(PVector P1, PVector P2, float cellWidth, float cellHeight, color c) {

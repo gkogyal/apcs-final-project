@@ -1,12 +1,11 @@
-final float vertVel = 4; // measured in pixels per frame
-final float horizVel = 3;
-final float upVel = 1;
-final float maxVel = 5;
+final float vertVel = 8; // measured in pixels per frame
+final float horizVel = 16;
+final float maxVel = 100;
 
 boolean up,down,left,right;
 
 boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked,restartClicked,altarClicked;
-int difficultyClicked;
+int difficultyClicked,lastUse;
 
 boolean special1;
 
@@ -35,8 +34,8 @@ void checkInputs() {
     altarClicked = key == 'e' || key == 'E';
     difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
   }
-  
-  swordSwung = (PLAYER.hotbar[PLAYER.heldInd] instanceof Sword) && PLAYER.hotbar[PLAYER.heldInd].hb.active;
+
+  swordSwung = (PLAYER.hotbar[PLAYER.heldInd] instanceof Sword) && (PLAYER.hotbar[PLAYER.heldInd].hb!=null && PLAYER.hotbar[PLAYER.heldInd].hb.active) && (frameCount - PLAYER.hotbar[PLAYER.heldInd].lastUse > 6);
   shieldActivated = (PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) && PLAYER.hotbar[PLAYER.heldInd].dmg==0;
   mousePos = new PVector(mouseX, mouseY);
   
@@ -56,9 +55,8 @@ void keyPressed() {
     POPUPS[POPUP_IND].setType(invClicked ? "inv" : "map");
   }
   
-  if (restartClicked && deathTime != -1) {
+  if (restartClicked) {
     ctrlZ();
-    deathTime = -1;
   }
   
   switch(POPUP_IND) {
@@ -86,10 +84,10 @@ void mouseClicked() {
     case -1:
       if(mouseButton==LEFT) {
         PLAYER.swapSlot(0);
-        PLAYER.prepareAttack();
+        PLAYER.attack();
       } else if(mouseButton==RIGHT) {
         PLAYER.swapSlot(1);
-        PLAYER.prepareAttack();
+        PLAYER.attack();
       }
       break;
     case 0:
