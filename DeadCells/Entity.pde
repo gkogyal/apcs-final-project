@@ -10,47 +10,86 @@ abstract class Entity {
   boolean alive = true;
   
   void drawEntity() {
-    PImage sprite = anim.getFrame();
-    sprite.resize(int(dim.x),int(dim.y));
-    image(sprite,P1.x,P1.y);
-    if(highlightEntity) {
-      highlight();
+    try {
+        PImage sprite = anim.getFrame();
+        if(sprite != null) {
+            sprite.resize(int(dim.x), int(dim.y));
+            image(sprite, P1.x, P1.y);
+        }
+    } catch(Exception e) {
+        // Fallback debug rectangle
+        fill(255,0,0);
+        rect(P1.x, P1.y, dim.x, dim.y);
     }
-  }
+    
+    if(highlightEntity) highlight();
+}
   
   void toggleHighlight() {highlightEntity = !highlightEntity;}
   
   void toggleHighlight(boolean b) {highlightEntity = b;}
   
   void highlight() {
-    noFill(); stroke(255,0,0);
-    rect(P1.x,P1.y,dim.x,dim.y); // red hitbox around entity
+    fill(150); stroke(255,0,0);
   }
   
   boolean canExistAt(PVector P3) {
-    PVector dP1 = PVector.div(P1,float(tileSize)).add(P3);
-    PVector dP2 = PVector.div(P2,float(tileSize)).add(P3);
+    int tileX = (int)(P3.x/tileSize);
+    int tileY = (int)(P3.y/tileSize);
+    int tileX2 = (int)((P3.x+dim.x)/tileSize);
+    int tileY2 = (int)((P3.y+dim.y)/tileSize);
     
-    // checks tiles which are considerably larger than pixels and entities
-    // hence will actually only access map est. 1-10 times;
-    for(int x = int(dP1.x); x<int(dP2.x); x++) {
-      for(int y = int(dP1.y); y<int(dP2.y); y++) {
-        if(!STAGE.map[x][y]) return false; // assumes that a 1 means valid tile
-      }
+    // checks tiles the entity would be on
+    for(int x = tileX; x<=tileX2; x++) {
+        for(int y = tileY; y<=tileY2; y++) {
+            if(x<0 || y<0 || x>=STAGE.map[0].length || y>=STAGE.map.length) {
+                return false;
+            }
+            if(!STAGE.map[y][x]) {
+                return false;
+            }
+        }
     }
-    
-    return true; // if no invalid tiles, then must be true
+    return true;
   }
   
-  void reposition(PVector P3) {
-    if(this.canExistAt(P3)) {
-      this.P1 = P3; // updates top left coord
-      this.P2 = PVector.add(P1,dim); // updates bottom right coord
-    }
-  }
+  void reposition(PVector movement) {
+    
+    PVector newPos = PVector.add(P1, movement);
+    boolean dx=false,dy=false;
+    
+    //if(Util.distance(P1,newPos)>=3) {
+
+      // check x movement
+      PVector tempPos = new PVector(newPos.x, P1.y);
+      if(canExistAt(tempPos)) {
+          P1.x = tempPos.x;
+          P2.x = P1.x + dim.x;
+          dx = true;
+      }
+      
+      // check y movement
+      tempPos = new PVector(P1.x, newPos.y);
+      if(canExistAt(tempPos)) {
+          P1.y = tempPos.y;
+          P2.y = P1.y + dim.y;
+          dy = true;
+      }
+      /*
+      if(dx&&dy) {
+        
+        //In the case of going up and left 1 unit:
+        //Valid iff the folowing 3 actions are valid: going up 1 unit, going left 1 unit and going up and left 1 unit are all valid
+        
+        if(!canExistAt(newPos)) {
+          P1 = newPos;
+        }
+      }*/
+    //}
+}
   
   void applyGravity() {
-    dir.y+=0.5;
+    dir.y+=2;
     reposition(new PVector(0, dir.y));
   }
   

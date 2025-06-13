@@ -30,6 +30,8 @@ class Loading extends Popup {
   };
   String splash;
   
+  final String endPhrase = "Congrats on Finishing!";
+  
   public Loading() {
     super("Start0.png");
     randSplash();
@@ -69,6 +71,11 @@ class Loading extends Popup {
   void displayWaiting() {
     textSize(43); fill(0);
     boldText(splash,textCenter);
+  }
+  
+  void displayFinish() {
+    textSize(90); fill(0);
+    boldText(endPhrase,textCenter);
   }
   
   void randSplash() {

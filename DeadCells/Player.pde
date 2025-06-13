@@ -12,7 +12,6 @@ class Player extends Entity {
   
   final int defaultHP = 100;
   final int defaultDef = 0;
-  final PVector dim = new PVector(50,80);
   final float healInc = 0.03; // Alters how much hp heal() gives.
   
   Item[] hotbar = new Item[4]; // 0 = main weapon; 1 = shield; 2 = trap; 3 = trap;
@@ -23,25 +22,49 @@ class Player extends Entity {
     
   PVector stats = new PVector(1,1,1); // brutality, tactics, survival
   
-  public Player(int x, int y) {
+  String[] extraAnims = new String[] {
+    "SwordLeft"
+    ,"SwordRight"
+    ,"ShieldLeft"
+    ,"ShieldRight"
+  };
+  
+  public Player() {
     maxHp = defaultHP; hp = 1.0;
-    P1 = new PVector(x,y);
+    P1 = new PVector(dW/2,dH/2);
+    dim = new PVector(50,80);
     P2 = PVector.add(P1,dim);
     
     anim = new Animation(false,"player");
     
+    anim.addStates(extraAnims);
+    
+    highlightEntity = true;
     dir = new PVector(0,0);
-    hp = 1;
     heals = 7;
     heldInd = 0;
   }
   
   void update(){
     move();
+    applyGravity();
     drawEntity();
   }
   
   void move() {
+    
+    dir = new PVector(0,0);
+    
+    if(up) { dir.y -= horizVel; n[0]++;}
+    if(down) { dir.y += horizVel; n[0]--;}
+    if(left) { dir.x -= vertVel; n[1]++;}
+    if(right) { dir.x += vertVel; n[1]--;}
+    
+    // Normalize diagonal movement
+    if(dir.x != 0 && dir.y != 0) {
+        dir.normalize().mult(maxVel);
+    }
+    
     reposition(dir);
   }
   

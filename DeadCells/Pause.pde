@@ -38,7 +38,7 @@ class Pause extends Popup {
     
     fill(255, 255, 0);
     textSize(30);
-    text("Press ESC to Quit   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
+    text("Press K to Resume   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
     text("Press a number between 1-9 to change Difficulty",7*dW/15,15*dH/16);
     
     fill(255);
@@ -71,6 +71,10 @@ class Pause extends Popup {
             rect(P1.x + x * cellWidth, P1.y + y * cellHeight, cellWidth, cellHeight);
         }
     }
+    
+    
+    fill(0,255,0);
+    rect(P1.x + (int)(PLAYER.P1.x/tileSize) * cellWidth, P1.y + (int)(PLAYER.P1.y/tileSize) * cellHeight, cellWidth, cellHeight);    
   }
   
   void drawInv(PVector P1, PVector d, Item[] arr) {

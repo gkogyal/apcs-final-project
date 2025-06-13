@@ -1,3 +1,7 @@
+String[] enemyNames = new String[] {
+  "zombie","shieldBearer"
+};
+
 class Enemy extends Entity {
   /*
   int maxHp;

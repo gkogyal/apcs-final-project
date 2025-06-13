@@ -18,7 +18,7 @@ static class Util{
   
   /* PATH/FILE MANIPULATION */
   
-  int getFileLen(String path) {
+  static int getFileLen(String path) {
     File f = new File(path);
     if(f.isDirectory()) {
       return f.list().length;

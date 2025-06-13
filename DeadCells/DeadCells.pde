@@ -13,27 +13,35 @@ int tileSize = 120;
 int ROWS = 100;
 int COLS = 100;
 ArrayList<Hitbox> HITBOXES = new ArrayList<Hitbox>();
+PImage background;
 
 int dW;
 int dH;
 
-int[] n = new int[3];
+int[] n = new int[4]; // solely for testing to mark code
 
 void setup() {
   fullScreen();
+  println(Util.getFileLen(dataPath("") + "/stages/"));
   ctrlZ();
   println(dW);
   println(dH);
 }
 
 void draw(){
-  
+  checkInputs();
   if(POPUP_IND==-1) {
     // running the game
-    CAMERA.render(STAGE);
+    PLAYER.update();
+    CAMERA.render();
+    /*
+    TODO:
+    update all enemies
+    go to next stage if all enemies are dead
+    */
   } else if (POPUP_IND==0) {
     POPUPS[POPUP_IND].display();
-    // show starting screen or loading screen
+    // show starting/finishing screen or loading screen
   } else if (POPUP_IND==1) {
     // show map or inventory
     POPUPS[POPUP_IND].display();
@@ -48,7 +56,10 @@ void draw(){
   textSize(12);
   String xy = mouseX + ", " + mouseY;
   String nStr = n[0] + ", " + n[1] + ", " + n[2];
-  text(xy + " " + nStr, 30, 20);
+  String pxy = PLAYER.P1.x + ", " + PLAYER.P1.y;
+  String pdxy = PLAYER.dir.x + ", " + PLAYER.dir.y;
+  textAlign(LEFT,BOTTOM);
+  text(xy + "||" + nStr + "||" + pxy + "||" + pdxy, 50, 50);
 }
 
 void ctrlZ() {
@@ -56,12 +67,16 @@ void ctrlZ() {
   dW = displayWidth;
   dH = displayHeight;
   
-  STAGE = new Stage();
-  stageNumber = 0;
+  tileSize = displayHeight/6;
+  
+  background = loadImage(dataPath("") + "/background.png");
+  
+  stageNumber = 3;
+  nextStage();
   
   CAMERA = new Camera();
   
-  PLAYER = new Player(0,0);
+  PLAYER = new Player();
   
   hitboxes = new ArrayList<Hitbox>();
   
@@ -69,13 +84,12 @@ void ctrlZ() {
     (new Loading()), (new Pause()), (new Upgrade())
   };
   
+  PLAYER.hotbar = new Item[]{
+    (new Sword("iceSword")), (new Shield("woodenShield")), (new Special("bearTrap")), (new Special("bombTrap"))
+  };
+  
   POPUP_IND = 0;
   POPUPS[POPUP_IND].setType("start");
-  
-  PLAYER.hotbar[0] = new Sword("iceSword");
-  PLAYER.hotbar[1] = new Shield("woodenShield");
-  PLAYER.hotbar[2] = new Special("bearTrap");
-  PLAYER.hotbar[3] = new Special("bombTrap");
   
   /*
     TODO:
@@ -92,4 +106,5 @@ void nextStage() {
    > Moves player
    > 
   */
+  STAGE = new Stage(++stageNumber);
 }

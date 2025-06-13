@@ -1,10 +1,9 @@
 final float vertVel = 4; // measured in pixels per frame
 final float horizVel = 3;
+final float upVel = 1;
 final float maxVel = 5;
 
 boolean up,down,left,right;
-
-PVector d;
 
 boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked;
 int difficultyClicked;
@@ -16,33 +15,37 @@ boolean shieldActivated;
 PVector mousePos;
 String mouseButtonClicked; // mouse button clicked
 
-void check() {
-  up = keyCode == 'W' || keyCode == 'w' || keyCode == ' ';
-  down = keyCode == 'S' || keyCode == 's';
-  left = keyCode == 'A' || keyCode == 'a';
-  right = keyCode == 'D' || keyCode == 'd';
+void checkInputs() {
   
-  d = new PVector(int(up)-int(down),int(right)-int(left)); // 0 if both are same, 1 if up/right, -1 if down/left
+  up = down = left = right = false;
+  healClicked = invClicked = mapClicked = escapeClicked = nextBgClicked = false;
   
-  healClicked = keyCode=='F' || keyCode == 'f';
-  invClicked = keyCode=='V' || keyCode == 'v';
-  mapClicked = keyCode=='M' || keyCode == 'm';
-  escapeClicked = keyCode==ESC || keyCode == ESC;
-  nextBgClicked = keyCode=='L' || keyCode=='l';
-  difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
+  if(keyPressed) {
+    up = key == 'W' || key == 'w' || key == ' ';
+    down = key == 'S' || key == 's';
+    left = key == 'A' || key == 'a';
+    right = key == 'D' || key == 'd';
+    
+    healClicked = key=='F' || key == 'f';
+    invClicked = key=='V' || key == 'v';
+    mapClicked = key=='M' || key == 'm';
+    escapeClicked = key=='K' || key == 'k';
+    nextBgClicked = key=='L' || key=='l';
+    difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
+  }
   
   shieldActivated = (PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) && PLAYER.hotbar[PLAYER.heldInd].dmg==0;
-  
   mousePos = new PVector(mouseX, mouseY);
+  
   mouseButtonClicked = (mouseButton==RIGHT) ? "RIGHT" : "LEFT";
 }
   
 void keyPressed() {
   
-  check();
+  checkInputs();
   
   if(escapeClicked) {
-    ctrlZ();
+    POPUP_IND = -1;
   }
     
   if(invClicked || mapClicked) {
@@ -52,20 +55,29 @@ void keyPressed() {
   
   switch(POPUP_IND) {
     case -1:
-      
-      if(d.x!=0) {
-        if(d.x==1) {
+      if(left!=right) {
+        if(right) {
           PLAYER.anim.setState("runRight");
-        } else if(d.x==-1) {
+          PLAYER.dir.x = 1;
+        } else if(left) {
           PLAYER.anim.setState("runLeft");
+          PLAYER.dir.x = -1;
         }
-      } else if (d.y!=0) {
-        if(d.y==1) {
+      } else {
+        PLAYER.dir.x = 0;
+      }
+      
+      if (up!=down) {
+        if(up) {
           PLAYER.anim.setState("up");
-        } else if(d.x==-1) {
+          PLAYER.dir.y = 1;
+        } else if(down) {
           PLAYER.anim.setState("down");
+          PLAYER.dir.y = -1;
         }
-      } 
+      } else {
+        PLAYER.dir.y = 0;
+      }
       
       if(healClicked) {
         PLAYER.heal();
@@ -74,13 +86,12 @@ void keyPressed() {
     case 1:
       POPUPS[POPUP_IND].display();
       if(difficultyClicked>0) DIFFICULTY = difficultyClicked; 
-
       break;
   }
 }
   
 void mouseClicked() {
-  check();
+  checkInputs();
   
   switch(POPUP_IND) {
     case -1:
@@ -97,11 +108,6 @@ void mouseClicked() {
       PVector R1 = new PVector((2*dW/3) - 300, 775);
       PVector R2 = PVector.add(R1,new PVector(600,150));
       boolean buttonClicked = Util.pointInRect(mousePos, R1, R2);
-      if(POPUPS[POPUP_IND].getType()=="start" && stageNumber==0 && mouseButtonClicked=="LEFT" && buttonClicked) {
-          // REAL CODE: nextStage();
-          // PSEUDO
-          POPUPS[POPUP_IND].setType("waiting");
-      }
       
       if (POPUPS[POPUP_IND].getType()=="waiting" && mouseButtonClicked=="RIGHT" && buttonClicked) {
         POPUPS[POPUP_IND].filler(0);
@@ -109,6 +115,13 @@ void mouseClicked() {
       
       if (POPUPS[POPUP_IND].getType()=="waiting" && mouseButtonClicked=="LEFT" && !buttonClicked) {
         POPUPS[POPUP_IND].filler(1);
+      }
+      
+      if(POPUPS[POPUP_IND].getType()=="start" && mouseButtonClicked=="LEFT" && buttonClicked) {
+          // REAL CODE: 
+          POPUP_IND = -1;
+          // PSEUDO CODE:
+          //POPUPS[POPUP_IND].setType("waiting");
       }
       
       break;
@@ -123,21 +136,27 @@ void mouseClicked() {
         PVector topLeft = new PVector(dW/21 + i*mult, y);
         if(Util.pointInRect(mousePos, topLeft, PVector.add(topLeft,RD))) {
           if(i==0) {
-            PLAYER.stats.x++; n[0]++;
+            PLAYER.stats.x++;
           }
           else if(i==1) {
-            PLAYER.stats.y++; n[1]++;
+            PLAYER.stats.y++;
           }
           else {
-            PLAYER.stats.z++; n[2]++;
+            PLAYER.stats.z++;
           }
         }
       }
+      POPUP_IND = -1;
       break;
   }
 }
 
+void keyReleased() {
+  checkInputs();
+}
+
 void mouseReleased() {
+  checkInputs();
   switch(POPUP_IND) {
     case -1:
       //shield hold

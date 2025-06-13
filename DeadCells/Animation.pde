@@ -1,6 +1,6 @@
 class Animation {
   
-  String basePath = dataPath("") + "/entities/";
+  String basePath;
   
   ArrayList<String> states = new ArrayList<String>(){{
     // universal sprite states:
@@ -17,7 +17,7 @@ class Animation {
   String path;
   
   public Animation(boolean isEnemy, String ent) {
-    basePath += ((isEnemy) ? "enemies/" : "") + ent + "/sprites/";
+    basePath = dataPath("") + "/entities/" + ((isEnemy) ? "enemies/" : "") + ent + "/sprites/";
     // this is the path to the directory which holds all of the sprite of the entity
     setState(0);
   }
