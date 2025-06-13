@@ -11,7 +11,7 @@ class Shield extends Item {
     
   public Shield(String fileString) {
     super(fileString);
-    super.animType = 1;
+    this.id = "shield";
   }
   
   void use() {

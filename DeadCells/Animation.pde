@@ -9,7 +9,6 @@ class Animation {
     add("runRight");
     add("up");
     add("down");
-    add("damaged");
   }};
   
   int stateInd;
@@ -71,6 +70,6 @@ class Animation {
   }
   
   PImage getFrame() {
-    return loadImage(path + "/" + frameCount%getCycleLen() + ".png");
+    return loadImage(path + "/" + (frameCount/10)%getCycleLen() + ".png");
   }
 }

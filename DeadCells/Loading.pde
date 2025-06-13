@@ -13,7 +13,7 @@ class Loading extends Popup {
   
   final String startPhrase = "START";
   final int animFPS = 60; // how often change bg
-  final int numBg = 4; // amount of bg's
+  final int numBg = 3; // amount of bg's
   int bgNum = 0; // index of current bg
   
   final String[] splashes = new String[] {

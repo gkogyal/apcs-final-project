@@ -21,7 +21,7 @@ class Hitbox {
   // 1 point -> trap
   public Hitbox(Item item, PVector P1) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -32,7 +32,7 @@ class Hitbox {
   // 1 point, 1 direction -> arrow tip
   public Hitbox(Item item, PVector P1, float dir) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -43,7 +43,7 @@ class Hitbox {
   // 1 point, direction boolean, and duration -> sword slash
   public Hitbox(Item item, PVector P1, boolean isRight, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -77,7 +77,7 @@ class Hitbox {
   // abstract timed rectangular hitbox
   public Hitbox(Item item, PVector P1, PVector P2, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;;
+    this.hitboxType = item.id;
     this.atkDmg = item.dmg;
     this.origin = P1;
     this.duration = duration;
@@ -141,11 +141,15 @@ class Hitbox {
   
   //  Loop through all enemies: if checkCollision() -> takeDmg()
   void checkAllCollisions() {
+    boolean hitEnemy = false;
     for(Enemy enemy : STAGE.ENEMIES) {
-      if(checkCollision(enemy)) {
-        enemy.takeDmg(atkDmg);
-      }
+        if(enemy.alive && checkCollision(enemy)) {
+            enemy.takeDmg(atkDmg);
+            hitEnemy = true;
+        }
     }
-    deactivate();
-  }
+    if(hitEnemy || (duration > 0 && millis()-startTime>duration)) {
+        deactivate();
+    }
+}
 }

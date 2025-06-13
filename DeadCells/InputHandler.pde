@@ -10,7 +10,7 @@ int difficultyClicked;
 
 boolean special1;
 
-boolean shieldActivated;
+boolean swordSwung, shieldActivated, trap1, trap2;
 
 PVector mousePos;
 String mouseButtonClicked; // mouse button clicked
@@ -34,6 +34,7 @@ void checkInputs() {
     difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
   }
   
+  swordSwung = (PLAYER.hotbar[PLAYER.heldInd] instanceof Sword) && PLAYER.hotbar[PLAYER.heldInd].hb.active;
   shieldActivated = (PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) && PLAYER.hotbar[PLAYER.heldInd].dmg==0;
   mousePos = new PVector(mouseX, mouseY);
   
@@ -53,32 +54,13 @@ void keyPressed() {
     POPUPS[POPUP_IND].setType(invClicked ? "inv" : "map");
   }
   
+  if ((key == 'r' || key == 'R') && deathTime != -1) {
+    ctrlZ();
+    deathTime = -1;
+  }
+  
   switch(POPUP_IND) {
-    case -1:
-      if(left!=right) {
-        if(right) {
-          PLAYER.anim.setState("runRight");
-          PLAYER.dir.x = 1;
-        } else if(left) {
-          PLAYER.anim.setState("runLeft");
-          PLAYER.dir.x = -1;
-        }
-      } else {
-        PLAYER.dir.x = 0;
-      }
-      
-      if (up!=down) {
-        if(up) {
-          PLAYER.anim.setState("up");
-          PLAYER.dir.y = 1;
-        } else if(down) {
-          PLAYER.anim.setState("down");
-          PLAYER.dir.y = -1;
-        }
-      } else {
-        PLAYER.dir.y = 0;
-      }
-      
+    case -1:      
       if(healClicked) {
         PLAYER.heal();
       }

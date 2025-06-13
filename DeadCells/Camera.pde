@@ -7,9 +7,11 @@ public class Camera {
   }
 
   public void snapToPlayer() {
-    tileSize = dH/20;
-    loc.x = constrain(PLAYER.P1.x - dW/2, 0, STAGE.map[0].length * tileSize - dW);
-    loc.y = constrain(PLAYER.P1.y - dH/2, 0, STAGE.map.length * tileSize - dH);
+    tileSize = dH/8;
+    float maxX = STAGE.map[0].length * tileSize - dW;
+    float maxY = STAGE.map.length * tileSize - dH;
+    loc.x = constrain(PLAYER.P1.x - dW/2, 0, maxX);
+    loc.y = constrain(PLAYER.P1.y - dH/2, 0, maxY);
   }
   
   public void render() {
@@ -28,6 +30,14 @@ public class Camera {
     pushMatrix();
     translate(-loc.x, -loc.y);
     PLAYER.drawEntity();
+    for(Enemy e : STAGE.ENEMIES) {
+      if(e.alive) e.drawEntity();
+      if(debug) {
+        fill(255,0,0);
+        text("E", e.P1.x + 20, e.P1.y + 20);
+      }
+    }
+
     popMatrix();
   }
 }

@@ -1,11 +1,13 @@
 String[] enemyNames = new String[] {
-  "zombie","shieldBearer"
+  "zombie" // 100 hp, 
+  ,"shieldBearer"
+  ,"creeper"
 };
 
 class Enemy extends Entity {
   /*
   int maxHp;
-  float hp;
+  float hp=1;
   PVector P1,P2,dim,dir = new PVector(0,0);
   
   Animation anim;
@@ -28,36 +30,25 @@ class Enemy extends Entity {
     this.P1 = new PVector(x,y); // P1 stores top left coord of entity hurtbox
     decodeEnemy(enemyName); // fills entity information
     this.P2 = PVector.add(P1,dim); // updates P2 to store bottom right coord of entity hurtbox
-    hp = 1; // start with 100% hp
-    
-    STAGE.ENEMIES.add(this);
   }
   
   /*
   Enemy File Example:
-  3 2 (dim.x, dim.y)
   100 (maxHp)
   30 10 (dmg, atkspd)
-  2 (enemyType)
   20 150 (attackDist,chaseDist)
   */
   void decodeEnemy(String enemyName) {
     try {
-      Scanner s = new Scanner(new File(enemyName));
-      
-      dim = new PVector(s.nextInt(),s.nextInt()); 
-      
-      s.nextLine();
-      maxHp = s.nextInt(); hp = maxHp;
+      Scanner s = new Scanner(new File(dataPath("") + "/entities/enemies/" + enemyName + "/data.txt"));
+
+      maxHp = s.nextInt();
       
       s.nextLine();
       dmg = s.nextInt(); atkspd = s.nextInt(); 
       
       s.nextLine();
-      enemyType = s.nextInt(); 
-      
-      s.nextLine();
-      attackDist = s.nextInt(); chaseDist = s.nextInt(); 
+      attackDist = s.nextInt();  chaseDist = s.nextInt(); 
       
       s.close();
     } catch(Exception e) {
@@ -67,6 +58,7 @@ class Enemy extends Entity {
   
   void update() {
     action();
+    drawEntity();
   }
   
   /*
@@ -90,6 +82,7 @@ class Enemy extends Entity {
   
   void attack() {
     if(frameCount-lastAtk >= atkspd) {
+      anim.setState("attack");
       int trueDmg = (dmg*DIFFICULTY)/4;
       PLAYER.takeDmg(trueDmg);
       lastAtk = frameCount;

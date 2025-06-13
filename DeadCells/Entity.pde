@@ -1,13 +1,15 @@
 abstract class Entity {
   int maxHp;
-  float hp; // stored as percent of maxHp
-  PVector P1,P2,dim,dir = new PVector(0,0); // P1,P2 = top left, bottom right points of hurtbox
+  float hp=1; // stored as percent of maxHp
+  PVector P1,P2,dim=new PVector(50,80),dir = new PVector(0,0); // P1,P2 = top left, bottom right points of hurtbox
   
   Animation anim;
   
   boolean highlightEntity = false; // used to outline entities -- defaulted to false
   
   boolean alive = true;
+  
+  int lastAtk;
   
   void drawEntity() {
     try {
@@ -23,7 +25,18 @@ abstract class Entity {
     }
     
     if(highlightEntity) highlight();
-}
+    drawHPBar();
+  }
+
+  void drawHPBar() {
+    int barMargin = 10;
+    noStroke();
+    fill(255,0,0); // fill red for 0% of health points
+    rect(P1.x, P1.y - barMargin, dim.x, barMargin/2);
+    
+    fill(0,255,0); // fill green for (this.hp*100)% of health points
+    rect(P1.x, P1.y - barMargin, dim.x * hp, barMargin/2);
+  }
   
   void toggleHighlight() {highlightEntity = !highlightEntity;}
   
