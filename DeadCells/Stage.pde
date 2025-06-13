@@ -47,7 +47,7 @@ public class Stage {
     int attempts = 0;
     for (int i = 0; i < r.connections.size(); i++) {
       println("whichtodo: " + r.connections.get(i));
-      if (rooms.size() > 200) break;   //TEMP SIZE HARD LIMIT COUNTER
+      if (rooms.size() > 500) break;   //TEMP SIZE HARD LIMIT COUNTER
       attempts ++;
       Room t = new Room(new File(pullRandomRoom1(stage)));
       resizeMap(coord, t.size);

@@ -1,19 +1,24 @@
 class Sword extends Item {
+  /*
+  int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
+  int classType, animType;
+  String itemName;
   
-  public Sword(File f) {
+  int lastUse = 0;
+  
+  Hitbox hb;
+  */
+  
+  public Sword(String f) {
     super(f);
   }
   
-  @Override
-  void use(Entity e) {
-      //e = new Entity(0,0,0,0,"ts attack func needs to be finished");
+  void use() {
+    if (canUse()) {
+      boolean isRight = PLAYER.dir.x>0;
+      hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
+      lastUse = frameCount;
+    }
   }
-  
-  public void animateItem(){
-    
-    
-  }
-  
-  
   
 }

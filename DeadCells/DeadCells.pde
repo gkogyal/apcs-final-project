@@ -2,9 +2,10 @@ Camera c;
 Stage s;
 InputHandler inp;
 
+private final int dW = displayWidth, dL = displayHeight;
 void setup() {
   fullScreen();
-  s = new Stage(50, 1);
+  s = new Stage(70, 1);
   c = new Camera(s);
   inp = new InputHandler();
   //printSmap();

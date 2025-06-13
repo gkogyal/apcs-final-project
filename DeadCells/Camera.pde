@@ -1,5 +1,4 @@
 public class Camera {
-  private final int dW = displayWidth, dL = displayHeight;
   public double f = 2;
   public int tileSize = (int) (dL/f);
   public PVector loc = new PVector(0,0);
