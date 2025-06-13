@@ -12,8 +12,8 @@ class Pause extends Popup {
   final PVector bottomRight = new PVector(14*dW/16,9*dH/16);
   final PVector dim = new PVector(5*dW/16,7*dH/16);
   final int borderWidth = 20;
-  final color emptySpaceColor = color(255);
-  final color tileSpaceColor = color(0);
+  final color emptySpaceColor = color(200);
+  final color tileSpaceColor = color(100);
   
   final color emptySlotColor = color(255,0,0);
   final color fullSlotColor = color(0,255,255);
@@ -38,7 +38,7 @@ class Pause extends Popup {
     
     fill(255, 255, 0);
     textSize(30);
-    text("Press ESC to Quit   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
+    text("Press K to Resume   " + (popupType=="inv" ? "Press M to show Map" : "Press V to open Inventory"),7*dW/15,14*dH/16);
     text("Press a number between 1-9 to change Difficulty",7*dW/15,15*dH/16);
     
     fill(255);
@@ -60,17 +60,35 @@ class Pause extends Popup {
     float cellWidth = d.x / arr[0].length;
     float cellHeight = d.y / arr.length;
     
-    noStroke();
+    stroke(0);
     for (int y = 0; y < arr.length; y++) {
         for (int x = 0; x < arr[y].length; x++) {
-            if (arr[y][x]) {
-                fill(emptySpaceColor);
-            } else {
-                fill(tileSpaceColor);
-            }
-            rect(P1.x + x * cellWidth, P1.y + y * cellHeight, cellWidth, cellHeight);
-        }
+          color c = arr[y][x] ? emptySpaceColor : tileSpaceColor;
+          fill(c);
+          rect(P1.x + x * cellWidth, P1.y + y * cellHeight, cellWidth, cellHeight);
+      }
     }
+    
+    
+    fill(0,255,0);
+    //rect(P1.x + (int)(PLAYER.P1.x/tileSize) * cellWidth, P1.y + (int)(PLAYER.P1.y/tileSize) * cellHeight, cellWidth, cellHeight);
+    
+    markSqMap(P1, PLAYER.P1, cellWidth, cellHeight, color(0,255,0));
+    
+    for(Entity e : STAGE.ENEMIES) {
+      markSqMap(P1, e.P1, cellWidth, cellHeight, color(255,0,0));
+    }
+    
+    for(UpgradeAltar a : STAGE.ALTARS) {
+      if(!a.used) {
+        markSqMap(P1, a.position, cellWidth, cellHeight, color(255,0,255));
+      }
+    }
+  }
+
+  void markSqMap(PVector P1, PVector P2, float cellWidth, float cellHeight, color c) {
+    fill(c);
+    rect(P1.x + (int)(P2.x/tileSize) * cellWidth, P1.y + (int)(P2.y/tileSize) * cellHeight, cellWidth, cellHeight);
   }
   
   void drawInv(PVector P1, PVector d, Item[] arr) {

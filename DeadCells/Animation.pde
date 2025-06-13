@@ -1,15 +1,13 @@
 class Animation {
   
-  String basePath = dataPath("") + "/entities/";
+  String basePath;
   
   ArrayList<String> states = new ArrayList<String>(){{
     // universal sprite states:
     add("idle");
-    add("runLeft");
-    add("runRight");
+    add("_run"); // underscore as first character means rotates based on player dir
     add("up");
     add("down");
-    add("damaged");
   }};
   
   int stateInd;
@@ -17,7 +15,7 @@ class Animation {
   String path;
   
   public Animation(boolean isEnemy, String ent) {
-    basePath += ((isEnemy) ? "enemies/" : "") + ent + "/sprites/";
+    basePath = dataPath("") + "/entities/" + ((isEnemy) ? "enemies/" : "") + ent + "/sprites/";
     // this is the path to the directory which holds all of the sprite of the entity
     setState(0);
   }
@@ -71,6 +69,29 @@ class Animation {
   }
   
   PImage getFrame() {
-    return loadImage(path + "/" + frameCount%getCycleLen() + ".png");
-  }
+    String framePath = path;
+    
+    // Handle directional states
+    if(state.charAt(0) == '_') {
+        if(!PLAYER.isFacingRight()) {
+            // For left-facing, we'll flip the image
+            PImage frame = loadImage(framePath + "/" + (frameCount/10)%getCycleLen() + ".png");
+            frame.loadPixels();
+            PImage flipped = createImage(frame.width, frame.height, ARGB);
+            flipped.loadPixels();
+            
+            // Flip horizontally
+            for(int y = 0; y < frame.height; y++) {
+                for(int x = 0; x < frame.width; x++) {
+                    flipped.pixels[y * frame.width + (frame.width - 1 - x)] = frame.pixels[y * frame.width + x];
+                }
+            }
+            flipped.updatePixels();
+            return flipped;
+        }
+    }
+    
+    // Default case - no flipping needed
+    return loadImage(framePath + "/" + (frameCount/10)%getCycleLen() + ".png");
+}
 }

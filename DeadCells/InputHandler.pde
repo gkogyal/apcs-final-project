@@ -1,48 +1,53 @@
-final float vertVel = 4; // measured in pixels per frame
-final float horizVel = 3;
-final float maxVel = 5;
+final float vertVel = 8; // measured in pixels per frame
+final float horizVel = 16;
+final float maxVel = 100;
 
 boolean up,down,left,right;
 
-PVector d;
-
-boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked;
-int difficultyClicked;
+boolean healClicked,invClicked,mapClicked,escapeClicked,nextBgClicked,restartClicked,altarClicked;
+int difficultyClicked,lastUse;
 
 boolean special1;
 
-boolean shieldActivated;
+boolean swordSwung, shieldActivated, trap1, trap2;
 
 PVector mousePos;
 String mouseButtonClicked; // mouse button clicked
 
-void check() {
-  up = keyCode == 'W' || keyCode == 'w' || keyCode == ' ';
-  down = keyCode == 'S' || keyCode == 's';
-  left = keyCode == 'A' || keyCode == 'a';
-  right = keyCode == 'D' || keyCode == 'd';
+void checkInputs() {
   
-  d = new PVector(int(up)-int(down),int(right)-int(left)); // 0 if both are same, 1 if up/right, -1 if down/left
+  up = down = left = right = false;
+  healClicked = invClicked = mapClicked = escapeClicked = nextBgClicked = false;
   
-  healClicked = keyCode=='F' || keyCode == 'f';
-  invClicked = keyCode=='V' || keyCode == 'v';
-  mapClicked = keyCode=='M' || keyCode == 'm';
-  escapeClicked = keyCode==ESC || keyCode == ESC;
-  nextBgClicked = keyCode=='L' || keyCode=='l';
-  difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
-  
+  if(keyPressed) {
+    up = key == 'W' || key == 'w' || key == ' ';
+    down = key == 'S' || key == 's';
+    left = key == 'A' || key == 'a';
+    right = key == 'D' || key == 'd';
+    
+    healClicked = key=='F' || key == 'f';
+    invClicked = key=='V' || key == 'v';
+    mapClicked = key=='M' || key == 'm';
+    escapeClicked = key=='K' || key == 'k';
+    nextBgClicked = key=='L' || key=='l';
+    restartClicked = key == 'r' || key == 'R';
+    altarClicked = key == 'e' || key == 'E';
+    difficultyClicked = (Character.isDigit(keyCode)) ? int(keyCode)-48 : -1; // -1 if difficulty not clicked
+  }
+
+  swordSwung = (PLAYER.hotbar[PLAYER.heldInd] instanceof Sword) && (PLAYER.hotbar[PLAYER.heldInd].hb!=null && PLAYER.hotbar[PLAYER.heldInd].hb.active) && (frameCount - PLAYER.hotbar[PLAYER.heldInd].lastUse > 6);
   shieldActivated = (PLAYER.hotbar[PLAYER.heldInd] instanceof Shield) && PLAYER.hotbar[PLAYER.heldInd].dmg==0;
-  
   mousePos = new PVector(mouseX, mouseY);
+  
   mouseButtonClicked = (mouseButton==RIGHT) ? "RIGHT" : "LEFT";
 }
   
 void keyPressed() {
   
-  check();
+  checkInputs();
   
   if(escapeClicked) {
-    ctrlZ();
+    POPUP_IND = -1;
   }
     
   if(invClicked || mapClicked) {
@@ -50,46 +55,39 @@ void keyPressed() {
     POPUPS[POPUP_IND].setType(invClicked ? "inv" : "map");
   }
   
+  if (restartClicked) {
+    ctrlZ();
+  }
+  
   switch(POPUP_IND) {
-    case -1:
-      
-      if(d.x!=0) {
-        if(d.x==1) {
-          PLAYER.anim.setState("runRight");
-        } else if(d.x==-1) {
-          PLAYER.anim.setState("runLeft");
-        }
-      } else if (d.y!=0) {
-        if(d.y==1) {
-          PLAYER.anim.setState("up");
-        } else if(d.x==-1) {
-          PLAYER.anim.setState("down");
-        }
-      } 
-      
+    case -1:      
       if(healClicked) {
         PLAYER.heal();
+      }
+      if (key == 'e' || key == 'E') {
+        for (UpgradeAltar altar : STAGE.ALTARS) {
+          altar.interact();
+        }
       }
       break;
     case 1:
       POPUPS[POPUP_IND].display();
       if(difficultyClicked>0) DIFFICULTY = difficultyClicked; 
-
       break;
   }
 }
   
 void mouseClicked() {
-  check();
+  checkInputs();
   
   switch(POPUP_IND) {
     case -1:
       if(mouseButton==LEFT) {
         PLAYER.swapSlot(0);
-        PLAYER.prepareAttack();
+        PLAYER.attack();
       } else if(mouseButton==RIGHT) {
         PLAYER.swapSlot(1);
-        PLAYER.prepareAttack();
+        PLAYER.attack();
       }
       break;
     case 0:
@@ -97,11 +95,6 @@ void mouseClicked() {
       PVector R1 = new PVector((2*dW/3) - 300, 775);
       PVector R2 = PVector.add(R1,new PVector(600,150));
       boolean buttonClicked = Util.pointInRect(mousePos, R1, R2);
-      if(POPUPS[POPUP_IND].getType()=="start" && stageNumber==0 && mouseButtonClicked=="LEFT" && buttonClicked) {
-          // REAL CODE: nextStage();
-          // PSEUDO
-          POPUPS[POPUP_IND].setType("waiting");
-      }
       
       if (POPUPS[POPUP_IND].getType()=="waiting" && mouseButtonClicked=="RIGHT" && buttonClicked) {
         POPUPS[POPUP_IND].filler(0);
@@ -109,6 +102,13 @@ void mouseClicked() {
       
       if (POPUPS[POPUP_IND].getType()=="waiting" && mouseButtonClicked=="LEFT" && !buttonClicked) {
         POPUPS[POPUP_IND].filler(1);
+      }
+      
+      if(POPUPS[POPUP_IND].getType()=="start" && mouseButtonClicked=="LEFT" && buttonClicked) {
+          // REAL CODE: 
+          POPUP_IND = -1;
+          // PSEUDO CODE:
+          //POPUPS[POPUP_IND].setType("waiting");
       }
       
       break;
@@ -123,21 +123,27 @@ void mouseClicked() {
         PVector topLeft = new PVector(dW/21 + i*mult, y);
         if(Util.pointInRect(mousePos, topLeft, PVector.add(topLeft,RD))) {
           if(i==0) {
-            PLAYER.stats.x++; n[0]++;
+            PLAYER.stats.x++;
           }
           else if(i==1) {
-            PLAYER.stats.y++; n[1]++;
+            PLAYER.stats.y++;
           }
           else {
-            PLAYER.stats.z++; n[2]++;
+            PLAYER.stats.z++;
           }
         }
       }
+      POPUP_IND = -1;
       break;
   }
 }
 
+void keyReleased() {
+  checkInputs();
+}
+
 void mouseReleased() {
+  checkInputs();
   switch(POPUP_IND) {
     case -1:
       //shield hold

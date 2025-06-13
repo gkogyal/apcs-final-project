@@ -10,7 +10,7 @@ class Hitbox {
   String hitboxType;
   int atkDmg;
   
-  boolean active;
+  boolean active = false;
   float duration = -1; // if -1 > permanent hitbox
   float startTime;
  
@@ -21,7 +21,7 @@ class Hitbox {
   // 1 point -> trap
   public Hitbox(Item item, PVector P1) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -32,7 +32,7 @@ class Hitbox {
   // 1 point, 1 direction -> arrow tip
   public Hitbox(Item item, PVector P1, float dir) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -43,7 +43,7 @@ class Hitbox {
   // 1 point, direction boolean, and duration -> sword slash
   public Hitbox(Item item, PVector P1, boolean isRight, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;
+    this.hitboxType = item.id;;
     this.atkDmg = item.dmg;
     this.origin = P1;
     
@@ -77,7 +77,7 @@ class Hitbox {
   // abstract timed rectangular hitbox
   public Hitbox(Item item, PVector P1, PVector P2, float duration) {
     this.hbItem = item;
-    this.hitboxType = item.itemName;;
+    this.hitboxType = item.id;
     this.atkDmg = item.dmg;
     this.origin = P1;
     this.duration = duration;
@@ -129,7 +129,7 @@ class Hitbox {
     PVector E1 = e.P1;
     PVector E2 = e.P2;
     
-    switch(hitboxType) {
+    switch(hbItem.id) {
       case("trap"):
         return Util.intersectRectRect(origin,points[0],E1,E2);
       case("sword"):
@@ -139,13 +139,28 @@ class Hitbox {
     }
   }
   
-  //  Loop through all enemies: if checkCollision() -> takeDmg()
-  void checkAllCollisions() {
-    for(Enemy enemy : STAGE.ENEMIES) {
-      if(checkCollision(enemy)) {
-        enemy.takeDmg(atkDmg);
+  void activate(float x) {
+    if(x == 3) {
+      for(Enemy e : STAGE.ENEMIES) {
+        if(Util.distance(PLAYER.P1, e.P1)<=60) {
+          e.hp -= 0.5;
+          println(e.hp);
+        }
       }
     }
-    deactivate();
+  }
+  
+  //  Loop through all enemies: if checkCollision() -> takeDmg()
+  void checkAllCollisions() {
+    boolean hitEnemy = false;
+    for(Enemy enemy : STAGE.ENEMIES) {
+        if(enemy.alive && checkCollision(enemy)) {
+            enemy.takeDmg(atkDmg);
+            hitEnemy = true;
+        }
+    }
+    if(hitEnemy || (duration > 0 && millis()-startTime>duration)) {
+        deactivate();
+    }
   }
 }

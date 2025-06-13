@@ -13,22 +13,22 @@ class Loading extends Popup {
   
   final String startPhrase = "START";
   final int animFPS = 60; // how often change bg
-  final int numBg = 4; // amount of bg's
+  final int numBg = 3; // amount of bg's
   int bgNum = 0; // index of current bg
   
   final String[] splashes = new String[] {
     "Grass is green."
     ,"Peter Griffin."
     ,"4815162342 lines of code!"
-    ,"TX-15 Prog?"
-    ,"do your comms"
     ,"Made by Alex and Gephel!"
     ,"Finally working!"
     ,"Add splash text here"
     ,"'let's make dead cells' - alex shao"
-    ,"I am running out of ideas."
+    ,"running out of ideas"
   };
   String splash;
+  
+  final String endPhrase = "Congrats on Finishing!";
   
   public Loading() {
     super("Start0.png");
@@ -42,6 +42,8 @@ class Loading extends Popup {
       displayStart();
     } else if (popupType=="waiting") {
       displayWaiting();
+    } else if (popupType=="finish") {
+      displayFinish();
     }
   }
   
@@ -69,6 +71,11 @@ class Loading extends Popup {
   void displayWaiting() {
     textSize(43); fill(0);
     boldText(splash,textCenter);
+  }
+  
+  void displayFinish() {
+    textSize(50); fill(0);
+    boldText(endPhrase,textCenter);
   }
   
   void randSplash() {

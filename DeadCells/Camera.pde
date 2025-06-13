@@ -1,45 +1,46 @@
 public class Camera {
-  public double f = 20;
-  public int tileSize = (int) (dH/f);
-  public PVector loc = new PVector(0,0);
-  private int leftMost = (int) (-loc.y) / tileSize;
-  private int topMost = (int) (-loc.x) / tileSize;
+  
+  final color invalidSpace = color(0);  
+  PVector loc = new PVector(0,0); // top left of camera
 
   public Camera() {
   }
 
   public void snapToPlayer() {
+    tileSize = dH/8;
+    float maxX = STAGE.map[0].length * tileSize - dW;
+    float maxY = STAGE.map.length * tileSize - dH;
+    loc.x = constrain(PLAYER.P1.x - dW/2, 0, maxX);
+    loc.y = constrain(PLAYER.P1.y - dH/2, 0, maxY);
   }
   
-  public void render( Stage stage ) {
-    tileSize = (int) (dH/f);
-    leftMost =  (int) (-loc.y) / tileSize;
-    topMost =   (int) (-loc.x) / tileSize;
-    for (int r = leftMost; r <= leftMost + (dH/tileSize) + 1; r++)
-      for (int c = topMost; c <= topMost + (dW/tileSize) + 1; c++)
-        if ( r > 0 && c > 0 && r < stage.map.length && c < stage.map[0].length && stage.map[r][c]){
-          noStroke();
-          fill(#395E58);
-          square(loc.x + c * tileSize, loc.y + r * tileSize, tileSize);
-          if (r - 1 > 0 && !stage.map[r-1][c]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize, loc.y + r * tileSize, tileSize + tileSize/20, tileSize/20);
-          }
-          if (r + 1 < stage.map.length && !stage.map[r+1][c]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize,loc.y + (r +1)* tileSize, tileSize + tileSize/20, tileSize/20);
-          }
-          if (c - 1 > 0 && !stage.map[r][c-1]){
-            fill(#F15E58);
-            rect(loc.x + c * tileSize, loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);
-          }
-          if (c + 1 < stage.map[0].length && !stage.map[r][c+1]){
-            fill(#F15E58);
-            rect(loc.x + (c + 1) * tileSize,loc.y + r * tileSize, tileSize/20, tileSize + tileSize/20);
-          }
-          
-          
-        }
+  public void render() {
+    snapToPlayer();
+    noStroke();
+    image(background,0,0,dW,dH);
+    fill(invalidSpace);
+    for(int y = (int)(loc.y/tileSize); y<(int)((loc.y+dH+tileSize)/tileSize); y++) {
+      for(int x = (int)(loc.x/tileSize); x<(int)((loc.x+dW+tileSize)/tileSize); x++) {
+        if(x<0 || y<0 || y>=STAGE.map.length || x>=STAGE.map[0].length) continue;
+        
+        if(!STAGE.map[y][x]) square(x*tileSize-loc.x, y*tileSize-loc.y, tileSize); // Subtract camera offset
+      }
+    }
+    
+    pushMatrix();
+    translate(-loc.x, -loc.y);
+    for (UpgradeAltar altar : STAGE.ALTARS) {
+      altar.drawAltar();
+    }
+    PLAYER.drawEntity();
+    for(Enemy e : STAGE.ENEMIES) {
+      if(e.alive) e.drawEntity();
+      if(debug) {
+        fill(255,0,0);
+        text("E", e.P1.x + 20, e.P1.y + 20);
+      }
+    }
+
+    popMatrix();
   }
-  
 }

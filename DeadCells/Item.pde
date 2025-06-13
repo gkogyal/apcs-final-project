@@ -2,7 +2,7 @@ abstract class Item {
 
   int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
   int classType, animType;
-  String itemName;
+  String itemName,id;
   
   int lastUse = 0;
   
@@ -15,7 +15,8 @@ abstract class Item {
   void decodeItem(String itemName) {
     try {
       this.itemName = itemName;
-      String fileName = dataPath("") + "/weapons/" + itemName + "/data.txt";
+      
+      String fileName = dataPath("") + "/items/" + this.itemName + "/data.txt";
       Scanner s = new Scanner(new File(fileName));
       
       lvl = s.nextInt(); dmg = s.nextInt(); atkspd = s.nextInt();
@@ -40,7 +41,7 @@ abstract class Item {
   }
   
   PImage getSprite() {
-    return loadImage("weapons/" + itemName + "/sprite.png");
+    return loadImage("items/" + itemName + "/sprite.png");
   }
   
   abstract void use();

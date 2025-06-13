@@ -1,4 +1,4 @@
-sclass Upgrade extends Popup {
+class Upgrade extends Popup {
   /*
   String basePath = dataPath("") + "/popups/";
   String bgStr;
@@ -11,16 +11,7 @@ sclass Upgrade extends Popup {
   
   public Upgrade() {
     super("Upgrade.png");
-  }
-  
-  void addUpgrade(int scrollType) {
-    switch(scrollType) {
-      case(0): PLAYER.stats.x++; n[0]++; break;
-      case(1): PLAYER.stats.y++; n[1]++; break;
-      case(2): PLAYER.stats.z++; n[2]++; 
-    }
-  }
-  
+  }  
   void display() {
     displayBg();
     //displayTextBg(borderDim, dim);

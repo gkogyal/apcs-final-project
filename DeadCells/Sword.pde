@@ -2,7 +2,7 @@ class Sword extends Item {
   /*
   int lvl,dmg,atkspd; // atkspd = cooldown in milliseconds
   int classType, animType;
-  String itemName;
+  String itemName,id;
   
   int lastUse = 0;
   
@@ -11,13 +11,15 @@ class Sword extends Item {
   
   public Sword(String f) {
     super(f);
+    this.id = "sword";
   }
   
   void use() {
     if (canUse()) {
-      boolean isRight = PLAYER.dir.x>0;
-      hb = new Hitbox(this,PLAYER.P1,isRight,0.2);
-      lastUse = frameCount;
+      hb = new Hitbox(this,PLAYER.P1,PLAYER.isFacingRight(),0.2);
+      hb.activate(3);
+      this.lastUse = frameCount;
+      PLAYER.lastAtk = frameCount; 
     }
   }
   
